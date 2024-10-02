@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+
+<style>
+ footer {
+        position: fixed; /* Make it fixed at the bottom */
+        bottom: 50px;
+        width: 100%;
+        height: 60px; /* Adjust height if needed */
+        text-align: center;
+        padding-top: 10px;
+    }
+ body {
+        position: relative;
+        margin: 0;
+        padding-bottom: 100px; 
+        height: 50vh; 
+    }
+</style>
+</head>
+
+<body>
+<div align="center"><strong>EMERALD HYPERMARKET</strong><br />
+  <strong style="text-decoration:underline">Tax Debit Note(Purchase return)</strong><br />
+  <strong>TRN: OM1100025786</strong></div>
+<p>&nbsp;</p>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Entry No:</strong></td>
+    <td width="35%">{{doc.name}}</td>
+    <td width="16%">&nbsp;</td>
+    <td width="16%"><strong>Currency:RO</strong></td>
+    <td width="18%">&nbsp;</td>
+  </tr>
+</table>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Date:</strong></td>
+    <td width="22%">{{doc.posting_date}}</td>
+    <td width="29%">&nbsp;</td>
+    <td width="16%"><strong>Total Amt:<br />
+    </strong></td>
+    <td width="18%">&nbsp;</td>
+  </tr>
+</table>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Location:</strong></td>
+    <td width="40%">&nbsp;</td>
+    <td width="11%">&nbsp;</td>
+    <td width="16%"><strong>Disc:</strong></td>
+    <td width="18%">&nbsp;</td>
+  </tr>
+</table>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Supplier:</strong></td>
+    <td width="39%">{{doc.supplier}}</td>
+    <td width="12%">&nbsp;</td>
+    <td width="16%"><strong>Tax Amt:</strong></td>
+    <td width="18%">{{doc.total_taxes_and_charges}}</td>
+  </tr>
+</table>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Supplier TRN</strong><br /></td>
+    <td width="39%">&nbsp;</td>
+    <td width="12%">&nbsp;</td>
+    <td width="16%"><strong>Net Amt:</strong></td>
+    <td width="18%">{{doc.grand_total}}</td>
+  </tr>
+</table>
+<table width="100%" >
+  <tr>
+    <td width="15%"><strong>Remark:</strong></td>
+    <td width="43%">&nbsp;</td>
+    <td width="8%">&nbsp;</td>
+    <td width="16%"><strong>Return Type:</strong></td>
+    <td width="18%">Qty Return</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="1">
+  <tr>
+    <td width="4%"><div align="center"><strong>LN</strong></div></td>
+    <td width="10%"><div align="center"><strong>Item</strong></div></td>
+    <td width="15%"><div align="center"><strong>Description</strong></div></td>
+    <td width="17%"><div align="center"><strong>Packing</strong></div></td>
+    <td width="8%"><div align="center"><strong>Qty</strong></div></td>
+    <td width="7%"><div align="center"><strong>Price</strong></div></td>
+    <td width="9%"><div align="center"><strong>Total Amt</strong></div></td>
+    <td width="9%"><div align="center"><strong>Disc Amt</strong></div></td>
+    <td width="7%"><div align="center"><strong>Tax % </strong></div></td>
+    <td width="7%"><div align="center"><strong>Tax Amt</strong></div></td>
+    <td width="7%"><div align="center"><strong>Net Amt</strong></div></td>
+  </tr>
+  {% for item in doc.items %}
+  <tr>
+    <td height="29">{{item.idx}}</td>
+    <td>{{item.item_name}}</td>
+    <td>{{item.description}}</td>
+    <td>&nbsp;</td>
+    <td>{{item.qty}}</td>
+    <td>{{item.rate}}</td>
+    <td>{{item.amount}}</td>
+    <td>&nbsp;</td>
+    <td>{{item.tax_percentage}}</td>
+    <td>{{item.total_tax}}</td>
+    <td>{{item.net_amount}}</td>
+  </tr>
+  {% endfor %}
+   <tr>
+    <td width="4%">&nbsp;</td>
+	<td width="10%">&nbsp;</td>
+	<td width="15%">&nbsp;</td>
+	<td width="17%">&nbsp;</td>
+    <td width="8%"><div align="center"><strong>{{doc.total_qty}}</strong></div></td>
+    <td width="7%">&nbsp;</td> 
+    <td width="9%"><div align="center"><strong>{{doc.total}}</strong></div></td> 
+    <td width="9%"><div align="center"><strong>&nbsp;</strong></div></td>
+    <td width="7%">&nbsp;</td>
+    <td width="7%"><div align="center"><strong>{{doc.total_taxes_and_charges}}</strong></div></td>
+    <td width="7%"><div align="center"><strong>{{doc.grand_total}}</strong></div></td>
+  </tr>
+</table> 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<footer>
+<table width="100%" >
+  <tr>
+    <td width="16%"><div align="center"><strong>_________________</strong></div></td>
+    <td width="19%"><div align="center">______________</div></td>
+	 <td width="13%"><div align="center">______________</div></td>
+	  <td width="15%"><div align="center">______________</div></td>
+      <td width="20%"><div align="center">______________</div></td>
+      <td width="17%"><div align="center">______________</div></td>
+  </tr>
+    <tr>
+    <td width="16%"><div align="center"><strong>Prepared By</strong></div></td>
+    <td width="19%"><div align="center"><strong>Purchase Manager</strong></div></td>
+	<td width="13%"><div align="center"><strong>Accounts</strong></div></td>
+	<td width="15%"><div align="center"><strong>Store In-Charge</strong></div></td>
+	<td width="20%"><div align="center"><strong>Supplier Name &amp; Sign</strong></div></td>
+	<td width="17%"><div align="center"><strong>Security</strong></div></td>
+  </tr>
+</table>
+<table width="100%" >
+
+</table>
+</footer>
+</body>
+</html>

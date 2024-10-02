@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Stock Adjustment</title>
+<style type="text/css">
+  footer {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+    height: 60px;
+    text-align: center;
+    padding-top: 10px;
+  }
+  body {
+    position: relative;
+    margin: 0;
+    padding-bottom: 100px;
+    height: 50vh;
+  }
+  .style2 {font-size: 18px; font-weight: bold; }
+  .style3 {font-size: 24px; font-weight: bold; }
+</style>
+</head>
+
+<body>
+  <div align="right">Page 1 of 1 <br> 9/30/2024</div>
+  <div align="center" class="style2">EMERALD HYPERMARKET</div>
+  <p align="center" class="style3" style="text-decoration:underline">Stock Adjustment</p>
+  <p align="left">&nbsp;</p>
+  
+  <table width="47%">
+    <tr>
+      <td width="28%"><strong>Location:</strong></td>
+      <td width="72%">EMERALD HYPERMARKET TURKI</td>
+    </tr>
+  </table>
+
+  <table width="48%">
+    <tr>
+      <td><strong>Entry No:</strong></td>
+      <td>ADT40460</td>
+      <td>Date:</td>
+      <td>8/09/2024</td>
+    </tr>
+  </table>
+
+  <table width="48%">
+    <tr>
+      <td width="28%"><strong>Reason:</strong></td>
+      <td width="72%">WAREHOUSE COST ADJUSTED</td>
+    </tr>
+  </table>
+
+  <p>&nbsp;</p>
+
+  <!-- Table for Items -->
+  <table width="100%" border="1">
+    <tr>
+      <td width="6%"><div align="center"><strong>LN</strong></div></td>
+      <td width="9%"><div align="center"><strong>Item Code</strong></div></td>
+      <td width="17%"><div align="center"><strong>Description</strong></div></td>
+      <td width="21%"><div align="center"><strong>Packing</strong></div></td>
+      <td width="11%"><div align="center"><strong>Quantity</strong></div></td>
+      <td width="8%"><div align="center"><strong>Price</strong></div></td>
+      <td width="10%"><div align="center"><strong>Amount</strong></div></td>
+      <td width="9%"><div align="center"><strong>Retail</strong></div></td>
+      <td width="9%"><div align="center"><strong>Tot Retail</strong></div></td>
+    </tr>
+    
+    {% set row_count = 0 %}
+    {% for item in doc.items %}
+    {% if row_count < 10 %}
+    <tr>
+      <td><div align="center">{{ item.idx }}</div></td>
+      <td><div align="center">{{ item.item_code }}</div></td>
+      <td><div align="center">&amp;</div></td>
+      <td><div align="center">&amp;</div></td>
+      <td><div align="center">{{ item.qty }}</div></td>
+      <td><div align="center">&amp;</div></td>
+      <td><div align="center">{{ item.amount }}</div></td>
+      <td><div align="center">&amp;</div></td>
+      <td><div align="center">&amp;</div></td>
+    </tr>
+    {% set row_count = row_count + 1 %}
+    {% endif %}
+    {% endfor %}
+    
+    <!-- Fill remaining rows if less than 20 -->
+    {% for i in range(row_count, 10) %}
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    {% endfor %}
+
+    <!-- Total Row -->
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><div align="right"><strong>Total:</strong></div></td>
+      <td><div align="center"><strong>.000</strong></div></td>
+      <td>&nbsp;</td>
+      <td><div align="center"><strong>-12.809</strong></div></td>
+      <td>&nbsp;</td>
+      <td><div align="center"><strong>.00</strong></div></td>
+    </tr>
+  </table>
+
+  <p>&nbsp;</p>
+
+  <footer>
+    <table width="100%">
+      <tr>
+        <td width="52%"><div align="center"><strong>_________________</strong></div></td>
+        <td width="48%"><div align="center">______________</div></td>
+      </tr>
+    </table>
+    <table width="100%">
+      <tr>
+        <td width="52%"><div align="center"><strong>Prepared By</strong></div></td>
+        <td width="48%"><div align="center"><strong>Approved By</strong></div></td>
+      </tr>
+    </table>
+  </footer>
+</body>
+</html>
