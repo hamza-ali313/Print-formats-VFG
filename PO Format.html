@@ -81,7 +81,9 @@
     <td width="8%"><div align="center"><strong>Foc Qty</strong></div></td>
     <td width="9%"><div align="center"><strong>Net Amt</strong></div></td>
   </tr>
+  {% set row_count = 0 %}
   {% for item in doc.items %}
+  {% if row_count < 10%}
   <tr>
     <td>{{item.idx}}</td>
     <td>{{item.idx}}</td>
@@ -97,6 +99,27 @@
     <td>{{item.idx}}</td>
     <td>{{item.base_net_amount}}</td>
   </tr>
+  {% set row_count = row_count + 1 %}
+  {% endif %}
+{% endfor %}
+    
+{% for i in range(row_count, 10)%}
+<tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+</tr>
+
 {% endfor %}
     <tr>
     <td>Note:</td>
