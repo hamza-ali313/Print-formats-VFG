@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Receipt Document</title>
+    <style type="text/css">
+      .style1 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      td {
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        border: 2px solid #000;
+        border-radius: 25px;
+        padding: 10px;
+        margin-top: 130px;
+      "
+    >
+      <table style="line-height: 0.8">
+        <tr>
+          <!--<td rowspan="5" width="13%"><img src='files/Navbar_logo.png'/></td>-->
+          <td width="12%"><strong>Receipt</strong></td>
+          <td width="27%">&nbsp;</td>
+          <td width="15%"><strong>Report ID</strong></td>
+          <td width="33%">{{ doc.name or "" }}</td>
+        </tr>
+        <tr>
+          <td><strong>Date</strong></td>
+          <td>{{ doc.date or "" }}</td>
+          <td><strong>Report Date</strong></td>
+          <td>{{ doc.result_date or "" }}</td>
+        </tr>
+        <tr>
+          <td><strong>Patient</strong></td>
+          <td>{{ doc.patient or "" }} {{ doc.patient_name or "" }}</td>
+          <td><strong>Age</strong></td>
+          <td>{{ doc.patient_age or "" }}</td>
+        </tr>
+        <tr>
+          <td><strong>Referred by</strong></td>
+          <td>{{ doc.referrer or "" }}</td>
+          <td><strong>Gender</strong></td>
+          <td>{{ doc.patient_sex or "" }}</td>
+        </tr>
+        <tr>
+          <td><strong>Passport #</strong></td>
+          <td>{{ doc.passport or "" }}</td>
+          <td><strong>User Name</strong></td>
+          <td>{{ doc.practitioner or "" }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <p class="style1">{{ doc.department or "" }}</p>
+
+    {% if doc.department == 'Microbiology' %}
+    <table width="42%">
+      <tr>
+        <td width="34%"><strong>SPECIMEN : </strong></td>
+        <td width="66%">{{doc.template or ""}}</td>
+      </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table width="64%" style="margin: 0 0 0 0px">
+      {% for j in doc.normal_test_items %}
+      <tr>
+        <td width="31%">{{j.lab_test_name or ""}}<br /></td>
+        <td width="69%">{{j.result_value or ""}}{{j.lab_test_uom or ""}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% if doc.template == "URINE FOR CULTURE" %} 
+    {% set organisms = doc.organisms or [] %} 
+    {% set total_organisms = organisms | length %}
+    <table>
+      <tr>
+        <td>
+          <table style="line-height: 3px">
+            <thead>
+              <tr>
+                <td width="31%"><strong>Organisms</strong></td>
+                <td width="15%"><strong>Bacteria</strong></td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in organisms %} 
+                {% if loop.index is odd %}
+                  <tr>
+                    <td>{{i.organism}}</td>
+                    <td>{{i.bacteria}}</td>
+                  </tr>
+                {% endif %} 
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table style="line-height: 3px">
+            <thead>
+              <tr>
+                <td width="31%"><strong>Organisms</strong></td>
+                <td width="15%"><strong>Bacteria</strong></td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in organisms %} 
+                {% if loop.index is even %}
+                  <tr>
+                    <td>{{i.organism}}</td>
+                    <td>{{i.bacteria}}</td>
+                  </tr>
+                {% endif %} 
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    {% set antibiotics = doc.antibiotic_1 or [] %} 
+    {% set total_antibiotics = antibiotics | length %}
+
+    <p align="center"><strong>ANTIMICROBIAL SUSCEPTIBILITIES</strong></p>
+    <table>
+      <tr>
+        <td>
+          <table style="line-height: 3px">
+            <thead>
+              <tr>
+                <td width="31%"><strong>ANTIBIOTIC</strong></td>
+                <td width="15%"><strong>Sen1</strong></td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in antibiotics %} 
+              {% if loop.index is odd %}
+              <tr>
+                <td>{{i.antibiotic}}</td>
+                <td>{{i.sen1}}</td>
+              </tr>
+              {% endif %} 
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table style="line-height: 3px">
+            <thead>
+              <tr>
+                <td width="31%"><strong>ANTIBIOTIC</strong></td>
+                <td width="15%"><strong>Sen1</strong></td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in antibiotics %} {% if loop.index is even %}
+              <tr>
+                <td>{{i.antibiotic}}</td>
+                <td>{{i.sen1}}</td>
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>KEY : (S = SENSITIVE , I = INTERMIDATE , R = RESISTANT)</strong>
+    </p>
+    {% endif %}
+    <table width="59%">
+      <tr>
+        <td width="26%"><strong>REMARKS</strong></td>
+        <td width="74%">{{doc.lab_test_comment or ""}}</td>
+      </tr>
+    </table>
+    {% else %} 
+    {% if doc.normal_test_items or ''%}
+    <table style="border-bottom: 1px solid #878787">
+      <tr style="border: 1px solid #878787">
+        <td width="44%"><strong>Test</strong></td>
+        <td width="13%"><strong>Result</strong></td>
+        {% if doc.template != "TROPNIN-I - POCT" and doc.template != "DENGUE NS1
+        ANTIGEN" and doc.template != 'DENGUE'%}
+        <td width="13%"><strong>Unit</strong></td>
+        {% endif %} 
+        {% if doc.template != 'HBA1C (GLYCOSYLATED HAEMOGLOBIN)' and
+        doc.template != '25-HYDROXY VITAMIN D3' and doc.template != 'TSH(THYROID
+        STIMULATING HORMONE)' %} 
+        {% if doc.template == "BETA HCG (SERUM)" or
+        doc.template == 'PHOSPHORUS' or doc.template == 'T3' or doc.template ==
+        'PROLACTIN' or doc.template == 'LH' or doc.template == 'LH,PROLACTIN' or
+        doc.template == 'ASOT (ANTISTREPTOLYSIN "O" TITRE)'%}
+        <td width="30%" align="right">
+          <strong>REFERENCE RANGE(Female)</strong>
+        </td>
+        {% elif doc.template == "Glucose-6-Phosphate Dehydrogenase" or
+        doc.template == 'T3 (TRIODOTHYRONINE)' or doc.template == 'CREATININE
+        (SERUM)'%}
+        <td width="30%" align="right">
+          <strong>REFERENCE RANGE(Male)</strong>
+        </td>
+        {% else %}
+        <td width="30%" align="right"><strong>Normal Ranges</strong></td>
+        {% endif %}
+      {% endif %}
+      </tr>
+      {% if doc.lab_test_name == 'CBC PROFILE' %}
+      <h6><strong>{{doc.lab_test_name}}</strong></h6>
+      {% endif %} {% for j in doc.normal_test_items %}
+      <tr>
+        <td>{{ j.lab_test_name or "" }}</td>
+        <td>{{ j.result_value or "" }}</td>
+        {% if doc.template != "TROPNIN-I - POCT" and doc.template != 'DENGUE' %}
+        <td>{{ j.lab_test_uom or "" }}</td>
+        {% endif %}
+        <td align="right">{{ j.normal_range or "" }}</td>
+      </tr>
+      {% endfor %} {% if doc.lab_test_name == 'CBC PROFILE' %}
+      <tr>
+        <td width="26%"><strong>Morphology of RBCs</strong></td>
+        <td width="74%" colspan="3">{{doc.custom_result or ""}}</td>
+      </tr>
+      <tr>
+        <td width="26%"><strong>REMARKS</strong></td>
+        <td width="74%" colspan="3">{{doc.lab_test_comment or ""}}</td>
+      </tr>
+      {% endif %}
+    </table>
+    {% endif %} {% if doc.descriptive_test_items %}
+    <table style="border-bottom: 1px solid #000">
+      <tr style="border: 1px solid #ccc">
+        <td width="44%"><strong>Test</strong></td>
+        <td width="13%"><strong>Result</strong></td>
+        <td width="43%" align="right"><strong>Normal Ranges</strong></td>
+      </tr>
+      {% for i in doc.descriptive_test_items %}
+      <tr>
+        <td>{{ i.lab_test_particulars or "" }}</td>
+        <td>{{ i.result_value or "" }}</td>
+        <td align="right">{{ i.normal_range or "" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %} {% endif %}
+
+    <!--pregnancy Test static description start-->
+    {% if doc.template == "BETA HCG (SERUM)" %}
+    <table width="100%" border="1" style="line-height: 2px">
+      <tr>
+        <td colspan="4">
+          <div align="center">
+            <strong>Expected Values using the Eleesys HCG+B assay</strong>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td width="28%" rowspan="2">
+          <div align="center"><strong>Weeks of Gesstation</strong></div>
+        </td>
+        <td width="24%" rowspan="2">
+          <div align="center"><strong>N</strong></div>
+        </td>
+        <td colspan="2">
+          <div align="center"><strong>HCG mLU/ml</strong></div>
+        </td>
+      </tr>
+      <tr>
+        <td width="23%">
+          <div align="center"><strong>Median</strong></div>
+        </td>
+        <td width="25%">
+          <div align="center"><strong>5-95th Percentile</strong></div>
+        </td>
+      </tr>
+      <tr>
+        <td><div align="center">3</div></td>
+        <td><div align="center">25</div></td>
+        <td><div align="center">17.5</div></td>
+        <td><div align="center">5.8 - 71.2</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">4</div></td>
+        <td><div align="center">43</div></td>
+        <td><div align="center">141</div></td>
+        <td><div align="center">9.5 - 750</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">5</div></td>
+        <td><div align="center">23</div></td>
+        <td><div align="center">1398</div></td>
+        <td><div align="center">217 - 7138</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">6</div></td>
+        <td><div align="center">19</div></td>
+        <td><div align="center">3339</div></td>
+        <td><div align="center">158 - 31,795</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">7</div></td>
+        <td><div align="center">13</div></td>
+        <td><div align="center">39,759</div></td>
+        <td><div align="center">3697 - 163,563</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">8</div></td>
+        <td><div align="center">23</div></td>
+        <td><div align="center">90,084</div></td>
+        <td><div align="center">32,065 - 149,571</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">9</div></td>
+        <td><div align="center">23</div></td>
+        <td><div align="center">1,06,257</div></td>
+        <td><div align="center">63,803 - 151,410</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">10</div></td>
+        <td><div align="center">20</div></td>
+        <td><div align="center">85,172</div></td>
+        <td><div align="center">46,509 - 186,977</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">12*</div></td>
+        <td><div align="center">17</div></td>
+        <td><div align="center">66,676</div></td>
+        <td><div align="center">27,832 - 210,612</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">14*</div></td>
+        <td><div align="center">67</div></td>
+        <td><div align="center">34,440</div></td>
+        <td><div align="center">13,950 - 62,530</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">15*</div></td>
+        <td><div align="center">666</div></td>
+        <td><div align="center">28,962</div></td>
+        <td><div align="center">12,039 - 70,971</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">16*</div></td>
+        <td><div align="center">766</div></td>
+        <td><div align="center">23,930</div></td>
+        <td><div align="center">9040 - 56,451</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">17*</div></td>
+        <td><div align="center">190</div></td>
+        <td><div align="center">20,860</div></td>
+        <td><div align="center">8175-55,868</div></td>
+      </tr>
+      <tr>
+        <td><div align="center">18*</div></td>
+        <td><div align="center">64</div></td>
+        <td><div align="center">19,817</div></td>
+        <td><div align="center">8099 - 58,176</div></td>
+      </tr>
+    </table>
+    {% endif %}
+    <!--pregnancy Test static description end-->
+
+    <p>{{ doc.result_legend or "" }}</p>
+    <p>
+      Note : This is a computer generated report duly verified by a pathologist
+      ,therefore signatures are not required.
+    </p>
+  </body>
+</html>
