@@ -1,4 +1,4 @@
-There is a logic of limited rows per page in stock Adjustment file so the flow of that logic is as follows
+**There is a logic of limited rows per page in stock Adjustment file so the flow of that logic is as follows**
 
 Detailed Flow of the Logic:
 
