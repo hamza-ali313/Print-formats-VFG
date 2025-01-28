@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+<style type="text/css">
+<!--
+p {
+    font-size: 11px;
+}
+.style1 {
+	font-size: 18px;
+	font-weight: bold;
+	position:relative;
+	top:25px;
+}
+.style4 {font-size: 8px; line-height:0; white-space: nowrap;}
+.style6 {font-size: 11px; color:#fff; background-color:#000; }
+tbody {}
+
+.check-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #000;
+}
+.status {
+    display:inline-flex;
+    align-items:center;
+    gap:12;
+}
+.status p:last-child {
+    border: 1px solid #000;
+    height: 20px;
+    width: 20px;
+}
+
+.check-box p {
+    margin: 0;
+    padding: 2px 0 3px 7px;
+}
+.box {
+ border:1px solid #000;
+ height:10px;
+ width:10px;
+ background-color:#009933;
+ display:block
+}
+table,td,th {
+ border-collapse: collapse;
+  padding:0
+    margin:0
+}
+td {
+    padding:0
+    margin:0
+}
+.style7 {color: #000000}
+
+@media print {
+    .page-break {         
+        page-break-before: always;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+    table {
+        /*page-break-before: avoid;*/
+        /*page-break-after: avoid;*/
+        /*page-break-inside: avoid;*/
+    }
+}
+
+.check-box p {
+    font-size:12px;
+}
+</style>
+</head>
+
+<body>
+{% macro job_advertisement_approval_form() %}
+<table width="100%" border="1" style="border:1px solid #000; border-collapse:collapse;">
+  <tr>
+    <td width="20%">
+      <img src="files/DQmzRKG.png" 
+      alt="navbar_logo" name="navbar_logo" width="200" height="80" id="navbar_logo" style="object-fit:contain"/>
+    </td>
+    <td width="50%">
+      <div align="center" class="style1">Job Application Form</div>
+    </td>
+    <td width="30%">
+      <table width="100%" border="1">
+        <tr>
+          <td colspan="2" class="style6" align="center" style="color:#fff;">QUALITY RECORDS/FORMS</td>
+        </tr>
+        <tr>
+          <td width="48%" class="style4">Doc. Level: IV</td>
+          <td width="48%" class="style4">Doc. Version: I</td>
+        </tr>
+        <tr>
+          <td height="4" class="style4" style="white-space:nowrap;">Doc. No: NPL-HRD-F36</td>
+          <td class="style4" style="white-space:nowrap;">w.e.f: 23rd May-2022</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+{% endmacro %}
+
+{{ job_advertisement_approval_form() }}
+<p align="center">&nbsp; </p>
+<p align="center">(To  be completed by Candidate) </p>
+<table width="100%" >
+  <tr>
+    <td width="81%" height="87">
+    <ul>
+      <li><strong style='font-size:11px'>I  am declaring that all the information that I am filling in this form is true.</strong></li>
+      <li><strong style='font-size:11px'>If  any information in this form that I have filled is found to be FALSE or  FRAUDELENT,</strong></li>
+      <li><strong style='font-size:11px'>then the company can  take action against me at any time.</strong></li>
+    </ul>
+    </td>
+    <td width="19%">
+    <p style="border: 1px solid #000; height: 120px; width: 120px; text-align: center; position: relative;">
+        {% if doc.profile %}
+            <img src="{{ doc.profile }}" style="height: 100%; width: 100%; object-fit: cover;" alt='Img'/>
+        {% else %}
+        <span style="position: absolute; top: 40px; left: 28px;">
+            Recent<br />
+            Photograph
+        </span>
+           {% endif %}
+    </p>
+</td>
+  </tr>
+</table>
+<p><strong>Position Applied for:</strong> <u>{{doc.designation}}</u>&nbsp;&nbsp;&nbsp;&nbsp; <strong>Department:</strong> 
+<u>{{doc.department}}</u>
+<strong>C/O:</strong> {{doc.co or ''}}</p>
+<p><span class="style7"><strong>APPLICANT  GENERAL INFORMATION</strong></span></p>
+<p><strong>Name (In capital Letter):</strong> <u>{{doc.applicant_name or ''}}</u> &nbsp;&nbsp;&nbsp;&nbsp;<strong>Father&rsquo;s Name:
+</strong> <u>{{doc.father_name or '' }}</u></p>
+<p><br />
+  <strong>Address: </strong> <u>{{doc.address or ''}}</u></p>
+<p>&nbsp;</p>
+<p><strong>CNIC No: </strong> &nbsp; <u>{{doc.cnic_no or ''}}</u> <strong>Res.Phone:</strong> &nbsp;<u>{{doc.res_phone or ''}}</u><strong>
+     Mobile No: &nbsp;</strong><u>{{doc.phone_number or ''}}</u></p>
+<p>&nbsp;</p>
+<p><strong>Date  of Birth:</strong> <u>{{doc.date_of_birth or ''}}</u> &nbsp; <strong>Place of Birth:</strong> <u>{{doc.place_of_birth or ''}}</u>
+&nbsp;&nbsp;
+<strong> Nationality:</strong> <u>{{doc.nationality or ''}}</u>
+&nbsp;&nbsp;
+<strong> Language: </strong><u>{{doc.language or ''}}</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></p>
+<table width="100%" class='religion'>
+  <tr>
+    <td width="10%"><p><strong>Religion:</strong></p></td>
+    <td width="16%">
+	<div class='check-box'>
+	<p style='font-size:8px'>Ahl E Tashih </p>
+		{% if doc.religion == 'Ahl E Tashih' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='tashih'></p>
+		{%endif%}
+	</div>
+	</td>
+    <td width="17%">
+	<div class='check-box'>
+	<p style='font-size:8px'>Qadyani</p>
+	{% if doc.religion == 'Qadyani' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='qadyani'></p>
+	{%endif%}
+	</div>
+	</td>
+	</td>
+    <td width="14%">
+	<div class='check-box'>
+	<p>Deobandi</p>
+	{% if doc.religion == 'Deobandi' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='deobandi'></p>
+	{%endif%}
+	</div>
+	</td>
+    <td width="12%">
+	<div class='check-box'>
+	<p>Ahl E Sunnat</p>
+	{% if doc.religion == 'Ahl E Sunnat' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='sunnat'></p>
+	{%endif%}
+	</div>
+	</td>
+    <td width="11%">
+	<div class='check-box'>
+	<p>Ahl E Hadees</p>
+    {% if doc.religion == 'Ahl E Hadees' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='hadees'></p>
+	{%endif%}
+	</div>
+</td>
+    <td width="20%">
+	
+<div class='check-box'>
+		<p>others:</p>
+		 {% if doc.religion == 'Other' %} 
+	<p class='tick'></p> 
+	{% else %}
+	<p class='other'></p>
+		{%endif%}
+	</div>
+	</td>
+	<td class="checkbox-cell">&nbsp;</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><strong>Family Background:  Father Occupation: ___________________________________________________ No of siblings:  ________ </strong></p>
+<p style='display:inline-block'><br />
+<strong>Marital Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<div class='status'>
+<p>Single:</p>
+		 {% if doc.marital_status == 'Single' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>&nbsp;&nbsp;
+  <div class='status'><p>Married:</p>
+  {% if doc.marital_status == 'Married' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No of Children :</strong>__________<strong> Blood Group: ________ 
+  Residence: <div class='status'>
+  <p>Own:</p>
+    {% if doc.residence == 'Own' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+  </div> &nbsp;&nbsp;  <div class='status'>
+  <p>Rent:</p>
+    {% if doc.residence == 'Rent' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+ </div></strong></p>
+<p style='display:inline-flex'><strong>Financial Support  from family: <div class='status'><p>Yes:</p>
+   {% if doc.fsff == 'Yes' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<div class='status'><p>No:</p>
+ {% if doc.fsff == 'No' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>&nbsp;&nbsp;&nbsp; I have: &nbsp;<div class='status'><p>Bike:</p>
+ {% if doc.i_have == 'Bike' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>&nbsp;&nbsp;&nbsp; <div class='status'><p>Car:</p>
+{% if doc.i_have == 'Car' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>&nbsp;&nbsp;&nbsp; <div class='status'><p>Company Maintain:</p>
+{% if doc.cmoo == 'Maintain' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div> &nbsp;Or&nbsp; <div class='status'><p>Own:</p>
+{% if doc.cmoo == 'Own' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div> &nbsp;&nbsp; 
+ <div class='status'><p>No Conveyance:</p>
+{% if doc.conveyance == 'No' %} 
+	<p class='tick'></p> 
+	{% else %}
+<p></p>
+{% endif %}
+</div>
+<p>&nbsp;</p>
+<p><strong>ACADEMICS QUALIFICATION</strong></p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="252"><p align="center"><strong>Educational Institute Name</strong></p></td>
+    <td width="245"><p align="center"><strong>Degree/Certificate/Course</strong></p></td>
+    <td width="106"><p align="center"><strong>Completion Year</strong></p></td>
+    <td width="115"><p align="center"><strong>Result</strong></p></td>
+  </tr>
+  <tr>
+    <td width="252" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="245" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="106" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="115" valign="top"><p><strong>&nbsp;</strong></p></td>
+  </tr>
+</table>
+<p><strong>EXPERIENCE</strong></p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="182"><div align="center"><strong>Organization/Company Name</strong> </div></td>
+    <td width="122"><p align="center"><strong>Designation</strong></p></td>
+    <td width="82"><p align="center"><strong>Job duration</strong></p></td>
+    <td width="163"><p align="center"><strong>Job Responsibilities</strong></p></td>
+    <td width="172"><p align="center"><strong>Reason for Discontinue</strong></p></td>
+  </tr>
+  <tr>
+    <td width="182" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="122" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="82" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="163" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="172" valign="top"><p><strong>&nbsp;</strong></p></td>
+  </tr>
+</table>
+<div style='display:flex; gap:20px;'>
+<div>
+<p><strong>COMPUTER SKILLS</strong><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong><strong> </strong></p>
+<table border="1" cellspacing="0" cellpadding="0" width="349">
+  <tr>
+    <td width="147"><div align="center"><strong>Course Name</strong> </div></td>
+    <td width="57"><p align="center"><strong>Avg.</strong></p></td>
+    <td width="53"><p align="center"><strong>Good</strong></p></td>
+    <td width="82"><p align="center"><strong>Excellent</strong></p></td>
+</tr>
+  <tr>
+    <td width="147" valign="top"><p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p></td>
+    <td width="57" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="53" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="82" valign="top"><p><strong>&nbsp;</strong></p></td>
+  </tr>
+</table>
+</div>
+<div>
+<p><strong>LANGUAGE SKILLS</strong></p>
+<table border="1" cellspacing="0" cellpadding="0" width="348">
+  <tr>
+    <td width="149"><div align="center"><strong>Language</strong></div></td>
+    <td width="57"><p align="center"><strong>Avg.</strong></p></td>
+    <td width="53"><p align="center"><strong>Good</strong></p></td>
+    <td width="79"><p align="center"><strong>Excellent</strong></p></td>
+</tr>
+  <tr>
+    <td width="149" valign="top"><p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p></td>
+    <td width="57" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="53" valign="top"><p><strong>&nbsp;</strong></p></td>
+    <td width="79" valign="top"><p><strong>&nbsp;</strong></p></td>
+  </tr>
+</table>
+</div>
+</div>
+<div class='page-break'></div>
+{{ job_advertisement_approval_form() }}
+<p align="center">&nbsp;</p>
+<p align="center">&nbsp;</p>
+<p align="center"><strong><u>CURRENT SALARY STRUCTURE DETAILS REQUIRED</u></strong></p>
+<p align="left">&nbsp;</p>
+<p> <strong>Name :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Organization Name:  _____________________________Address:______________________</strong></p>
+<p><strong>Job Entitlement in current Organization: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Permanent,  Contractual or Daily Wages)</strong></p>
+<p><strong>&nbsp;</strong></p>
+<p><strong>Basic Salary: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rs.____________________/-&nbsp; (Per Month)</strong></p>
+<p><strong>Other Salary&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rs. ___________________ /- (Per Month)</strong></p>
+<p><strong>Net Salary: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rs.___________________/-&nbsp; (Per Month)</strong></p>
+<p><strong>Fuel &amp; Maintenance: &nbsp;&nbsp; Rs.____________________/-&nbsp; (Per Month)</strong></p>
+<p><strong>Gross Salary:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rs.___________________/-&nbsp;&nbsp; (Per Month)</strong></p>
+<p><strong>Mobile Allowance: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rs.____________________/-&nbsp;  (Per Month)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p>
+<p><strong>Incentive per month:&nbsp; Rs. ___________________/- (Average) Total  Target in Gallon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Per Qtr.</strong></p>
+<p><strong>Vehicle Available Own /  Company (Company Minted / On Loan) </strong></p>
+<p align="center"><strong><u>Other Benefits Details</u></strong></p>
+<p><strong>Annual Bonus / As Per Perf Bonus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; __________________.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p>
+<p><br />
+  <strong>Medical Facilities (Self / With Family)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;  __________________.&nbsp; (Only  Emergency, Admission &amp; OPD)</strong></p>
+<p><br />
+  <strong>Life Coverage (Self)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; __________________.</strong></p>
+<p><br />
+  <strong>Leave Encashment Policy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; __________________.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p>
+<p><br />
+  <strong>Gratuity / P.F Policy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp; __________________. (If PF Policy Monthly  Deduction Rs. __________&nbsp;)</strong></p>
+<p><br />
+  <strong>Working Days: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;._____________________.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duty Timings:&nbsp;&nbsp;&nbsp; __________________.</strong></p>
+<p><strong>&nbsp;</strong></p>
+<p><strong>Your  current Gross Salary Rs.__________ including all monetary benefits </strong><strong>(Take  Home Amount) ________</strong></p>
+<p><strong>&nbsp;</strong></p>
+<p><strong>Your Expected Salary  Rs._____________ including all monetary benefits </strong><strong>(Negotiable) Yes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;Not</strong><strong> </strong></p>
+<p><br />
+    <strong><br />
+  </strong><strong>Applicant  Signature: ________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date:  ______________________</strong></p>
+<p><br />
+  <strong>Name: ___________________________________</strong></p>
+<p align="left">&nbsp;</p>
+<p align="center">&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+</p>
+</body>
+</html>
