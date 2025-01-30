@@ -1,96 +1,113 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Untitled Document</title>
-</head>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Untitled Document</title>
 
-<body style='border:1px solid #000'>
-<div align="center">
-  <h1 style="line-height: 8px;"><strong>Rasheed Ahmed &amp; Sons </strong></h1>
-  <p style="line-height: 5px;"><strong>Plot # 417,433 Sector 7/A, Korangi Industrial Area Karachi </strong></p>
-  <h3 style="line-height: 2px;"><strong>PAYMENT VOUCHER</strong> </h3>
-</div>
-<table width="100%" style='border-top:1px solid #000;border-bottom:1px solid #000'>
-  <tr>
-    <td width="13%"><strong>Voucher No </strong></td>
-    <td width="37%">{{doc.name or ''}}</td>
-    <td width="27%">&nbsp;</td>
-    <td width="8%"><strong>Date</strong></td>
-    <td width="18%">{{doc.posting_date or ''}}</td>
-  </tr>
-</table>
-<table width="100%" >
-  <tr>
-    <td colspan="2"><div align="center"><strong>Particulars</strong></div></td>
-    <td width="19%">&nbsp;</td>
-    <td width="22%"><div align="left"><strong>Debit (Rs.)</strong> </div></td>
-    <td width="25%"><strong>Credit (Rs.)</strong> </td>
-  </tr>
-  {% for i in doc.accounts %}
-   {% if i.debit_in_account_currency %}
-  <tr>
-    <td width="10%"><strong>Debit</strong></td>
-    <td width="40%">{{i.account or ''}}</td>
-    <td>&nbsp;</td>
-    <td width="25%">{{i.debit_in_account_currency or ''}}</td>
-    <td>&nbsp;</td>
-  </tr>
-{% endif %}  
-   {% if i.credit_in_account_currency %}
-  <tr>
-    <td><strong>Credit</strong></td>
-    <td>{{i.account or ''}}</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td width="25%">{{i.credit_in_account_currency or ''}}</td>
-  </tr>
-  {% endif %} 
-    {% endfor %}
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td><strong>{{doc.total_debit or ''}}</strong></td>
-    <td><strong>{{doc.total_credit or ''}}</strong></td>
-  </tr>
-</table>
-<table width="100%" style='border-top:1px solid #000;border-bottom:1px solid #000'>
-  <tr>
-    <td>For Weekly Payments </td>
-  </tr>
-</table>
-<table width="100%">
-  <tr>
-    <td width="47%" colspan='8'><strong>{{frappe.utils.in_words(doc.total_credit).upper() or ''}}</strong></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td width="20%">&nbsp;</td>
-    <td width="15%"><strong>Prepared By</strong> </td>
-    <td>&nbsp;</td>
-    <td width="15%"><strong>Verified By</strong> </td>
-    <td>&nbsp;</td>
-    <td width="15%"><strong>Authorised By</strong> </td>
-    <td>&nbsp;</td>
-    <td width="15%"><strong>Received By</strong> </td>
-  </tr>
-</table>
-</body>
+    <style>
+      body {
+        margin: 0 1mm;
+        min-height: 148.5mm; /* half of the height of A4 size */
+        /*width: 210mm;  */
+      }
+     .middle_table {
+        min-height: 92mm;
+        display: flex;
+        position:relative;
+        /*overflow-y: auto;*/
+}
+    .middle_table tbody {
+        flex-grow: 1;
+        /*display: block;*/
+        /*overflow-y: auto;*/
+    }
+
+    </style>
+  </head>
+
+  <body style="border: 1px solid #000">
+    <div align="center">
+      <h1 style="line-height: 8px">
+        <strong>Rasheed Ahmed &amp; Sons </strong>
+      </h1>
+      <p style="line-height: 5px">
+        Plot # 417,433 Sector 7/A, Korangi Industrial Area Karachi
+      </p>
+      <h5 style="line-height: 2px"><strong>JOURNAL VOUCHER</strong></h5>
+    </div>
+    <table
+      width="100%"
+      style="border-top: 1px solid #000; border-bottom: 1px solid #000"
+    >
+      <tr>
+        <td width="19%"><strong>Voucher No </strong></td>
+        <td width="28%">{{doc.name or ''}}</td>
+        <td width="22%">&nbsp;</td>
+        <td width="9%"><strong>Date</strong></td>
+        <td width="22%">{{doc.get_formatted('posting_date') or ''}}</td>
+      </tr>
+    </table>
+    <table width="100%"  class='middle_table'>
+      <tr>
+        <td colspan="2" width="75%" align="center">
+          <strong>Particulars</strong>
+        </td>
+        <td width="15%">
+          <strong>Debit (Rs.)</strong>
+        </td>
+        <td width="15%"><strong>Credit (Rs.)</strong></td>
+      </tr>
+      {% for i in doc.accounts %} {% if i.debit_in_account_currency %}
+      <tr>
+        <td width="5%"><strong>Debit</strong></td>
+        <td width="65%">{{i.account or ''}}</td>
+        <td width="15%">
+          {{i.get_formatted('debit_in_account_currency').split('.')[0] or ''}}
+        </td>
+        <td width="15%">&nbsp;</td>
+      </tr>
+      {% endif %} 
+      {% if i.credit_in_account_currency %}
+      <tr>
+        <td width="5%"><strong>Credit</strong></td>
+        <td width="65%">{{i.account or ''}}</td>
+        <td width="15%">&nbsp;</td>
+        <td width="15%">
+          {{i.get_formatted('credit_in_account_currency').split('.')[0] or ''}}
+        </td>
+      </tr>
+      {% endif %} {% endfor %}
+    </table>
+    <div style='width:100%; position:relative;'>
+          <table style='width:100%; position:absolute; bottom:0; right:0;'>
+              <tr>
+                  <td width="70%"></td>
+                  <td style='border-top:1px solid #000; border-left:1px solid #000' width="15%"><strong>{{doc.get_formatted('total_debit').split('.')[0] or ''}}</strong></td>
+                  <td style='border-top:1px solid #000;' width="15%"><strong>{{doc.get_formatted('total_credit').split('.')[0] or ''}}</strong></td>
+              </tr>
+          </table>
+    </div>
+    <table
+      width="100%"
+      style="border-top: 1px solid #000; border-bottom: 1px solid #000">
+      <tr>
+        <td><strong>{{doc.user_remarks or ''}}</strong></td>
+      </tr>
+    </table>
+    <table width="100%">
+      <tr>
+        <td width="47%" colspan="8">
+          <strong style='font-size:9px'>{{frappe.utils.in_words(doc.total_credit).upper() or ''}}</strong
+          >
+        </td>
+      </tr>
+      <tr>
+        <td width="40%">&nbsp;</td>
+        <td width="15%"><strong>Prepared By</strong></td>
+        <td width="15%"><strong>Verified By</strong></td>
+        <td width="15%"><strong>Authorised By</strong></td>
+        <td width="15%"><strong>Received By</strong></td>
+      </tr>
+    </table>
+  </body>
 </html>
