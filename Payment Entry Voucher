@@ -1,0 +1,121 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Untitled Document</title>
+
+    <style>
+        body {
+            margin: 0 1mm;
+            min-height: 110.5mm;
+            /* half of the height of A4 size */
+            /*width: 210mm;  */
+        }
+
+        .middle_table {
+            min-height: 70mm;
+            display: flex;
+            position: relative;
+        }
+
+        .middle_table tbody {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body style="border: 1px solid #000">
+    <div align="center">
+        <h1 style="line-height: 8px">
+            <strong>Rasheed Ahmed &amp; Sons </strong>
+        </h1>
+        <p style="line-height: 5px">
+            Plot # 417,433 Sector 7/A, Korangi Industrial Area Karachi
+        </p>
+        <h5 style="line-height: 2px"><strong>PAYMENT VOUCHER</strong></h5>
+    </div>
+    <table width="100%" style="border-top: 1px solid #000; border-bottom: 1px solid #000">
+        <tr>
+            <td width="19%"><strong>Voucher No </strong></td>
+            <td width="28%">{{doc.name or ''}}</td>
+            <td width="22%">&nbsp;</td>
+            <td width="9%"><strong>Date</strong></td>
+            <td width="22%">{{doc.get_formatted('posting_date') or ''}}</td>
+        </tr>
+    </table>
+    <table width="100%" class='middle_table'>
+        <tr>
+            <td colspan="2" width="75%" align="center">
+                <strong>Particulars</strong>
+            </td>
+            <td width="15%">
+                <strong>Debit (Rs.)</strong>
+            </td>
+            <td width="15%"><strong>Credit (Rs.)</strong></td>
+        </tr>
+        <tr>
+            <td width="5%"><strong>Debit</strong></td>
+            <td width="65%">{{ doc.paid_to or ''}} <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{doc.reference_no or ''}}
+            </td>
+            <td width="15%">
+                {{doc.get_formatted('paid_amount').split('.')[0] or ''}}
+            </td>
+            <td width="15%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td width="5%"><strong>Credit</strong></td>
+            <td width="65%">{{doc.paid_from or ''}}<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{doc.reference_no or ''}}
+            </td>
+            <td width="15%">&nbsp;</td>
+            <td width="15%">
+                {{doc.get_formatted('paid_amount').split('.')[0] or ''}}
+            </td>
+        </tr>
+    </table>
+    <div style='width:100%; position:relative;'>
+        <table style='width:100%; position:absolute; bottom:0; right:0;'>
+            {% if payment_type == 'Internal Transfer '%}
+            <tr>
+                <td width="70%"></td>
+                <td style='border-top:1px solid #000; border-left:1px solid #000' width="15%">
+                    <strong>{{doc.get_formatted('received_amount').split('.')[0] or ''}}</strong></td>
+                <td style='border-top:1px solid #000;' width="15%">
+                    <strong>{{doc.get_formatted('paid_amount').split('.')[0] or ''}}</strong></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td width="70%"></td>
+                <td style='border-top:1px solid #000; border-left:1px solid #000' width="15%">
+                    <strong>{{doc.get_formatted('paid_amount').split('.')[0] or ''}}</strong></td>
+                <td style='border-top:1px solid #000;' width="15%">
+                    <strong>{{doc.get_formatted('paid_amount').split('.')[0] or ''}}</strong></td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+    <table width="100%" style="border-top: 1px solid #000; border-bottom: 1px solid #000">
+        <tr>
+            <td><strong style='font-size:10px'>{{doc.user_remark or ''}}</strong></td>
+        </tr>
+    </table>
+    <table width="100%">
+        <tr>
+            <td width="47%" colspan="8">
+                <strong style='font-size:10px'>{{frappe.utils.in_words(doc.paid_amount).upper() or ''}}</strong>
+            </td>
+        </tr>
+        <tr>
+            <td width="32%">&nbsp;</td>
+            <td width="17%"><strong>Prepared By</strong></td>
+            <td width="17%"><strong>Verified By</strong></td>
+            <td width="17%"><strong>Authorised By</strong></td>
+            <td width="17%"><strong>Received By</strong></td>
+        </tr>
+    </table>
+</body>
+
+</html>
