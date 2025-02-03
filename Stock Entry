@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Untitled Document</title>
+  </head>
+
+  <body>
+    <div style="border-bottom: 1px solid #000; text-align: end;">
+      <h1>STOCK ENTRY</h1>
+      <h5>{{doc.name or ''}}</h5>
+    </div>
+    <p>&nbsp;</p>
+    <table width="100%">
+      <tr>
+        <td width="22%"><strong>Stock Entry Type</strong></td>
+        <td width="23%">{{doc.stock_entry_type or ' '}}</td>
+        <td width="11%">&nbsp;</td>
+        <td width="13%"><strong> Posting Date</strong></td>
+        <td width="31%">{{doc.posting_date or ' '}}</td>
+      </tr>
+      <tr>
+        <td><strong>Purpose</strong></td>
+        <td>{{doc.stock_entry_type or ' '}}</td>
+        <td>&nbsp;</td>
+        <td><strong>Vehicle No</strong></td>
+        <td>{{doc.vehicle_no or ' '}}</td>
+      </tr>
+      <tr>
+        <td><strong>Transporter</strong></td>
+        <td>{{doc.transporter or ' '}}</td>
+        <td>&nbsp;</td>
+        <td><strong>Driver Name</strong></td>
+        <td>{{doc.stock_entry_type or ' '}}</td>
+      </tr>
+      <tr>
+        <td><strong>Driver</strong></td>
+        <td>{{doc.driver or ' '}}</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>{{doc.driver_name or ' '}}</td>
+      </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table width="100%" border="1">
+      <tr>
+        <td width="6%">
+          <div align="center"><strong>Sr</strong></div>
+        </td>
+        <td width="16%">
+          <div align="center">
+            <strong
+              >Source <br />
+              Warehouse
+            </strong>
+          </div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Target Warehouse </strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Item Code </strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Description </strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Item Group </strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Qty </strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>LBS</strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Kg</strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Bag</strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Valuation Rate</strong></div>
+        </td>
+        <td width="7%">
+          <div align="center"><strong>Amount</strong></div>
+        </td>
+        <td width="8%">
+          <div align="center"><strong>Lot</strong></div>
+        </td>
+      </tr>
+      {% for i in doc.items %}
+      <tr>
+        <td>{{i.idx or '' }}</td>
+        <td>{{i.source_warehouse or '' }}</td>
+        <td>{{i.target_warehouse or '' }}</td>
+        <td>{{i.item_code or '' }}</td>
+        <td>{{i.description or '' }}</td>
+        <td>{{i.item_group or '' }}</td>
+        <td>{{i.qty or '' }}</td>
+        <td>{{i.lbs or '' }}</td>
+        <td>{{i.kg or '' }}</td>
+        <td>{{i.bag or '' }}</td>
+        <td>{{i.valuation_rate or '' }}</td>
+        <td>{{i.amount or '' }}</td>
+        <td>{{i.lot or '' }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="7"><strong>Total</strong></td>
+        
+        {% set totalLbs = doc.items | sum(attribute='lbs') %}
+        {% set totalKgs = doc.items | sum(attribute='kg') %}
+        {% set totalBags = doc.items | sum(attribute='bag') %}
+    
+        <td>{{ totalLbs }}</td>
+        <td>{{ totalKgs }}</td>
+        <td>{{ totalBags }}</td>
+        <td colspan="3"></td>
+    </tr>
+    
+    </table>
+    <p>&nbsp;</p>
+    <table width="100%">
+      <tr>
+        <td style="border-bottom: 1px solid #000" width="25%"></td>
+        <td width="3%"></td>
+        <td style="border-bottom: 1px solid #000" width="25%"></td>
+        <td width="3%"></td>
+        <td style="border-bottom: 1px solid #000" width="25%"></td>
+      </tr>
+      <tr>
+        <td align="center">
+          <strong>PREPARED BY</strong>
+        </td>
+        <td></td>
+        <td align="center">
+          <strong>RECEIVED BY</strong>
+        </td>
+        <td></td>
+        <td align="center">
+          <strong> AUTHORIZED BY</strong>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+
