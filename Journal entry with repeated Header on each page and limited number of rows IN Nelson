@@ -1,0 +1,107 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Journal Voucher</title>
+
+    <style>
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+
+<body>
+    {% macro header() %}
+    <table width="100%" border="1">
+        <tr>
+            <td>
+                <div align="center" style="font-size: 18px; font-weight: bolder;">JOURNAL VOUCHER</div>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" style="border: 1px solid black;">
+        <tr style="font-size: 10px; font-weight: bold;">
+            <td width="37%">Voucher No.: {{ doc.naming_series or '' }}</td>
+            <td width="28%">Date: {{ doc.get_formatted('posting_date') or '' }}</td>
+            <td width="12%" style="font-size: 8px">User:</td>
+            <td width="23%" style="font-size: 8px">Print Date:</td>
+        </tr>
+    </table>
+    <table width="100%" border="1">
+        <tr>
+            <td style="font-size: 10px; font-weight: bold;">Narration: {{ doc.user_remark or '' }}</td>
+        </tr>
+    </table>
+    <table width="100%">
+        <tr align="center"
+            style="font-size: 10px; font-weight: bold; border: 1px solid black; background-color: beige;">
+            <td width="5%">S.No</td>
+            <td width="18%" align="left">Account Name</td>
+            <td width="21%" align="left">Party Name</td>
+            <td width="11%">Debit</td>
+            <td width="11%">Credit</td>
+            <td width="13%" align="left">Cost Center</td>
+            <td width="21%" align="left">Remarks</td>
+        </tr>
+    </table>
+    {% endmacro %}
+
+    {% macro footer() %}
+    <table width="100%">
+        <tr style="border: 1px solid black;">
+            <td align="right" style="font-size: 12px; font-weight: bold;" colspan="3">TOTAL</td>
+            <td align="center" style="font-size: 12px; font-weight: bold;">{{ doc.total_debit or '' }}</td>
+            <td align="center" style="font-size: 12px; font-weight: bold;">{{ doc.total_credit or '' }}</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table width="100%" border="1">
+        <tr>
+            <td align="left" style="font-size: 12px; font-weight: bold;">&nbsp;</td>
+        </tr>
+    </table>
+    <table width="100%" style="font-size: 8px; font-weight: bold; border: 1px solid black;">
+        <tr align="center">
+            <td><u>Prepared By</u></td>
+            <td><u>Checked By</u></td>
+            <td><u>Endorsed By</u></td>
+            <td><u>Approved By</u></td>
+            <td><u>Received By</u></td>
+        </tr>
+        <tr align="center">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    {% endmacro %}
+
+    {% set row_count = 0 %}
+    {{ header() }}
+    {% for i in doc.accounts %}
+    <table width="100%">
+        <tr align="center" style="font-size: 10px; border: 1px solid black;">
+            <td>{{ loop.index or '' }}</td>
+            <td align="left">{{ i.account or '' }}</td>
+            <td align="left">{{ i.party or '' }}</td>
+            <td>{{ i.debit_in_account_currency or '' }}</td>
+            <td>{{ i.credit_in_account_currency or '' }}</td>
+            <td align="left">{{ i.cost_center or '' }}</td>
+            <td align="left">{{ i.user_remark or '' }}</td>
+        </tr>
+    </table>
+    {% set row_count = row_count + 1 %}
+    {% if row_count % 13 == 0 %}
+    <div class="page-break"></div>
+    {% endif %}
+    {% endfor %}
+
+    {{ footer() }}
+</body>
+
+</html>
