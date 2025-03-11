@@ -1,0 +1,132 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Untitled Document</title>
+    <style type="text/css">
+        .style5 {
+            font-size: 12px;
+            padding-bottom: -2px;
+            font-weight: bold;
+        }
+
+        .style6 {
+            font-size: 12px;
+            padding-bottom: -2px;
+        }
+
+        .break {
+            page-break-before: always;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    {% macro header() %}
+    <header>
+        {{letter_head}}
+    </header>
+    <br />
+    <table width="50%" border="0">
+        <tr>
+            <td width="32%">Date</td>
+            <td width="68%">{{doc.get_formatted('posting_date')}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><br />The Manager <br />Askari Bank Ltd<br />SITE Super Highway-II, Karachi
+                <br /><br /><u><em><strong>Subject: Salary Transfer To Staff Account</strong></em></u>
+            </td>
+        </tr>
+    </table>
+    <table width="95%" border="0">
+        <tr>
+            <td><br /> Honorable,<br />
+                This has reference to the above subject, we request you to kindly transfer salary to staff account ,
+                Please debit our A/C# CD-2317-5 (ACBL Karachi) credit our staff account as per following details FTM
+                {{doc.select_month}}-{{doc.year}}</td>
+        </tr>
+    </table>
+    {% endmacro %}
+
+    {% set ns = {'row_count': 0} %}
+    {{ header() }}
+
+    <table width="100%" border="1">
+        <tr>
+            <td>
+                <div align="center" class="style5">SR#</div>
+            </td>
+            <td>
+                <div align="center" class="style5">NAME OF EMPLOYEE</div>
+            </td>
+            <td>
+                <div align="center" class="style5">ACCOUNT#</div>
+            </td>
+            <td>
+                <div align="center" class="style5">AMOUNT</div>
+            </td>
+        </tr>
+
+        {% for row in doc.salary_transfer_employees%}
+        {% if ns.row_count % 21 == 0 and ns.row_count > 0 %}
+        <tr class="break"></tr>
+        {{ header() }}
+        <table width="100%" border="1">
+            <tr>
+                <td>
+                    <div align="center" class="style5">SR#</div>
+                </td>
+                <td>
+                    <div align="center" class="style5">NAME OF EMPLOYEE</div>
+                </td>
+                <td>
+                    <div align="center" class="style5">ACCOUNT#</div>
+                </td>
+                <td>
+                    <div align="center" class="style5">AMOUNT</div>
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td align="center" class="style6">{{row.idx}}</div>
+                </td>
+                <td class="style6">{{row.employee_name}}</span></td>
+                <td class="style6">{{row.account_no}}</span></td>
+                <td align="right" class="style6">{{row.get_formatted('amount')}}</div>
+                </td>
+            </tr>
+
+            {% set _ = ns.update({'row_count': ns.row_count + 1}) %}
+            {%endfor%}
+        </table>
+        <br />
+        <table width="100%" border="0">
+            <tr>
+                <td width="39%">Hope for your kind favour in this regard,</td>
+                <td width="18%">&nbsp;</td>
+                <td width="8%">&nbsp;</td>
+                <td width="35%" align="right"><span style="border-bottom:2px double">{{doc.get_formatted('total') or
+                        ''}}</span></div>
+                </td>
+            </tr>
+            <tr>
+                <td><br />
+                    Thanks,</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><br />Sincerely</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+
+</body>
+
+</html>
