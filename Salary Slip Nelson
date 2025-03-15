@@ -1,0 +1,593 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Untitled Document</title>
+
+
+    <style>
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                position: relative;
+            }
+
+            table {
+                width: 100%;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+                page-break-before: avoid;
+                line-height: 10px;
+            }
+
+            footer {
+                position: relative;
+                bottom: 0;
+                page-break-before: avoid;
+                page-break-after: avoid;
+            }
+
+            @page {
+                size: landscape;
+                /*margin: 1cm;*/
+            }
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        td {
+            font-family: sans-serif;
+        }
+
+        p,
+        td {
+            font-size: 12px;
+        }
+
+        .title {
+            position: relative;
+            margin: 0 0 10px 0
+        }
+
+        .pg {
+            position: absolute;
+            right: 0;
+            top: -15px;
+        }
+
+        .pg span {
+            border: 1px solid #000;
+            border-radius: 50%;
+            display: inline-flex;
+            font-size: 33px;
+            height: 50px;
+            width: 50px;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        ul.in-tb li {
+            border-right: 1px solid #000
+        }
+
+        ul.in-tb {
+            display: flex;
+            justify-content: style
+        }
+
+        ul li {
+            list-style-type: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div align="center" class='title'>
+        <h1><strong>PAY SLIP</strong></h1>
+        <div class="pg">
+            <!--<span>1</span>-->
+        </div>
+    </div>
+
+
+    <table width="100%" border="1" style='line-height:13px'>
+        <tr>
+            <td width="18%" height="29"><strong>Employee Name</strong></td>
+            <td width="9%">{{doc.employee_code or ''}}</td>
+            <td width="16%">{{doc.employee_name or ''}}</td>
+            <td width="14%" rowspan="4" align='center'>
+                <!-- <img src={{doc.image}} width='120px' height='120px' /> -->
+                {% for attachment in frappe.get_all("File",filters={"attached_to_doctype":
+                doc.doctype, "attached_to_name": doc.name}, fields=["file_url"]) %}
+                <img
+                  src="{{ frappe.utils.get_url(attachment.file_url) }}"
+                  alt="Attachment"
+                  style="max-width: 120px; height: 120px; object-fit: cover"
+                />
+                {% endfor %}          
+            </td>
+            <td width="12%"><strong>Pay Slip No.</strong></td>
+            <td width="13%">{{doc.name or ''}}</td>
+            <td align='center' width="4%"><strong>Month</strong></td>
+            <td width="14%">{{doc.month}}-{{doc.year}}</td>
+        </tr>
+        <tr>
+            <td><strong>Department </strong></td>
+            <td colspan="2">{{doc.department}}</td>
+            <td><strong>Period From</strong></td>
+            <td>{{doc.get_formatted('start_date') or ''}}</td>
+            <td align="center"><strong>To</strong></td>
+            <td>{{doc.get_formatted('end_date') or ''}}</td>
+        </tr>
+        <tr>
+            <td><strong>Designation</strong></td>
+            <td colspan="2">{{doc.designation or ''}}</td>
+            <td><strong>CNIC #</strong></td>
+            <td colspan="3">{{doc.cnic or ''}}</td>
+        </tr>
+        <tr>
+            <td><strong>Paid By</strong> </td>
+            <td colspan="2">{{doc.bank_name or ''}}</td>
+            <td><strong>A/C #</strong></td>
+            <td colspan="3">{{doc.bank_account_no or ''}}</td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table width="100%">
+        <tr>
+            <td width="34%">
+                <table width="100%" border="1">
+                    <tr>
+                        <td colspan='3' align="center" style='background: #e0e0e0;'><strong>Salary With Allowances
+                            </strong></td>
+                    </tr>
+                    <tr>
+                        <td width="41%"><strong>BASIC SALARY</strong></td>
+                        <td align='end' width="29%">{{"%.2f" |format(doc.salarys) or ''}}</td>
+                        <td align='end' width="30%">
+                            {% set basic_salary = doc.earnings | selectattr("salary_component", "equalto", "BASIC SALARY") | list %}
+
+                            {% if basic_salary %}
+                            {{ "%.2f" | format(basic_salary[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>HOUSE RENT</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.house_rent)}}</td>
+                        <td align='end'>
+                            {% set house_rent = doc.earnings | selectattr("salary_component", "equalto", "HOUSE RENT") | list %}
+
+                            {% if house_rent %}
+                            {{ "%.2f" | format(house_rent[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>CONVEYANCE </strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.convence)}}</td>
+                        <td align='end'>
+                            {% set convenyance = doc.earnings | selectattr("salary_component", "equalto", "CONVENYANCE") | list %}
+
+                            {% if convenyance %}
+                            {{ "%.2f" | format(convenyance[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>UTILITY</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.utility)}}</td>
+                        <td align='end'>
+                            {% set utility = doc.earnings | selectattr("salary_component", "equalto", "UTILITY") | list %}
+
+                            {% if utility %}
+                            {{ "%.2f" | format(utility[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>MEDICAL</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.medical)}}</td>
+                        <td align='end'>
+                            {% set medical = doc.earnings | selectattr("salary_component", "equalto", "MEDICAL") | list %}
+
+                            {% if medical %}
+                            {{ "%.2f" | format(medical[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr style='background: #e0e0e0;'>
+                        <td><strong>Net Salary </strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.monthly_salary)}}</td>
+                        <td align='end'>{{"%.2f" | format(doc.custom_paid_monthly_salary)}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MISC</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.misc)}}</td>
+                        <td align='end'>
+                            {% set misc = doc.earnings | selectattr("salary_component", "equalto", "MISC") | list %}
+
+                            {% if misc %}
+                            {{ "%.2f" | format(misc[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>DRESSING</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.dressing)}}</td>
+                        <td align='end'>
+                            {% set dressing = doc.earnings | selectattr("salary_component", "equalto", "DRESSING") | list %}
+
+                            {% if dressing %}
+                            {{ "%.2f" | format(dressing[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>FUEL &amp; MAINT.</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.custom_fuel_maintenance)}}</td>
+                        <td align='end'>
+                            {% set fuel_maintenance = doc.earnings | selectattr("salary_component", "equalto", "Fuel Maintenance") | list %}
+
+                            {% if fuel_maintenance %}
+                            {{ "%.2f" | format(fuel_maintenance[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Barkat A/C</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.custom_barkat_ac)}}</td>
+                        <td align='end'>
+                            {% set barkat_ac = doc.earnings | selectattr("salary_component", "equalto", "Barkat A/C") | list %}
+
+                            {% if barkat_ac %}
+                            {{ "%.2f" | format(barkat_ac[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr style='background: #e0e0e0;'>
+                        <td><strong>Salary Scale</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.salary_scale)}}</td>
+                        <td align='end'>{{"%.2f" | format(doc.custom_paid_salary_scale)}}</td>
+                    </tr>
+                </table style='line-height:16px'>
+            </td>
+            <td width="35%">
+                <table width="100%" border="1">
+                    <tr>
+                        <td width="16%" rowspan="2" align="center"><strong>Actual Days</strong></td>
+                        <td width="21%" rowspan="2" align="center"><strong>Working Days</strong></td>
+                        <td colspan="3" align="center"><strong>Leaves</strong></td>
+                        <td width="21%" rowspan="2" align="center"><strong>Total Days</strong></td>
+                    </tr>
+                    <tr>
+                        <td width="13%" align="center"><strong>CL</strong></td>
+                        <td width="14%" align="center"><strong>EL</strong></td>
+                        <td width="15%" align="center"><strong>SL</strong></td>
+                    </tr>
+                    <tr>
+                        <td align="center">{{doc.total_month_days or ''}}</td>
+                        <td align="center">{{doc.custom_working_days or ''}}</td>
+                        <td align="center">{{doc.custom_casual_leave or ''}}</td>
+                        <td align="center">{{doc.annual_leave or ''}}</td>
+                        <td align="center">{{doc.custom_sick_leave or ''}}</td>
+                        <td align="center">{{doc.custom_total_days or ''}}</td>
+                    </tr>
+                </table>
+                <table width="100%" border="1" style='margin-top:9px'>
+                    <tr style='background: #e0e0e0;'>
+                        <td colspan="2" align="center"><strong>Deductions</strong></td>
+                        {% set less_deduction = 0 %}
+                    </tr>
+                    <tr>
+                        <td width="61%">
+                            <strong style='display:flex; justify-content:space-between'>Late (Minutes)
+                                <span>{{doc.late_plus_early_hours_}}</span></strong>
+                        </td>
+                        <td width="39%" align='end'>
+                            {% set late_total = doc.deductions
+                            | selectattr("salary_component", "in", ["Late", "Late Slab 2", "Late Slab 3"])
+                            | map(attribute="amount")
+                            | sum
+                            %}
+
+                            {{ "%.2f" | format(late_total) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Advance</strong></td>
+                        <td align='end'>
+                            {% set advance_deductions = doc.deductions | selectattr("salary_component", "equalto", "Advance") | map(attribute="amount") | list %}
+                            {{ "%.2f" | format(advance_deductions | sum) }}
+
+                            {% set less_deduction = less_deduction + (advance_deductions | sum) %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Loan</strong></td>
+                        <td align='end'>
+                            {% set loan_deductions = doc.deductions | selectattr("salary_component", "equalto", "Loan") | map(attribute="amount") | list %}
+                            {{ "%.2f" | format(loan_deductions | sum) }}
+
+                            {% set less_deduction = less_deduction + (loan_deductions | sum) %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Provident Fund </strong></td>
+                        <td align='end'>
+                            {% set provident_fund = doc.deductions
+                            | selectattr("salary_component", "equalto", "Provident Fund")
+                            | list
+                            %}
+
+                            {% if provident_fund %}
+                            {{ "%.2f" | format(provident_fund[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Others</strong></td>
+                        <td align='end'>
+                            {% set others_deduction = doc.deductions
+                            | selectattr("salary_component", "equalto", "Others Deduction")
+                            | list
+                            %}
+
+                            {% if others_deduction %}
+                            {{ "%.2f" | format(others_deduction[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>E.O.B.I</strong></td>
+                        <td align='end'>
+                            {% set eobi_deduction = doc.deductions
+                            | selectattr("salary_component", "equalto", "EOBI")
+                            | list
+                            %}
+
+                            {% if eobi_deduction %}
+                            {{ "%.2f" | format(eobi_deduction[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>SESSI</strong></td>
+                        <td align='end'>
+                            {% set sessi_deduction = doc.deductions
+                            | selectattr("salary_component", "equalto", "SESSI")
+                            | list
+                            %}
+
+                            {% if sessi_deduction %}
+                            {{ "%.2f" | format(sessi_deduction[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Income Tax</strong></td>
+                        <td align='end'>
+                            {% set total_tax = doc.deductions
+                            | selectattr("salary_component", "in", ['Income Tax Slab 1', 'Income Tax Slab 2',
+                            'Income Tax Slab 3', 'Income Tax Slab 4',
+                            'Income Tax Slab 5'])
+                            | map(attribute="amount")
+                            | sum
+                            %}
+
+                            {{ "%.2f" | format(total_tax) }}
+
+                        </td>
+                    </tr>
+                </table>
+                <!-- <table width="100%" border="0">
+                    <tr>
+                        <td width="21%">&nbsp;</td>
+                        {% set net_sal = 0 %}
+                        <td width="79%">&nbsp;</td>
+                    </tr>
+                </table> -->
+                <p>&nbsp;</p>
+            </td>
+            <td width="31%">
+                <table width="100%" border="1">
+                    <tr style='background: #e0e0e0;'>
+                        <td colspan="2" align="center"><strong>Additional Allowance </strong></td>
+                        {% set add_allowance = 0 %}
+                    </tr>
+                    <tr>
+                        <td width="61%"><strong style='display:flex; justify-content:space-between;'>O-T in Minutes
+                                <span>{{doc.approved_over_time}}</span>
+                            </strong></td>
+                        <td width="39%" align='end'>
+                            {% set has_overtime = doc.earnings | selectattr("salary_component", "equalto", "Overtime") | list %}
+
+                            {% if has_overtime %}
+                            {{ "%.2f" | format(has_overtime[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Att. Allowance</strong> </td>
+                        <td align='end'>
+                            {% set has_attendance_allowance = doc.earnings
+                            | selectattr("salary_component", "equalto", "Attendance Allowance")
+                            | list
+                            %}
+
+                            {% if has_attendance_allowance %}
+                            {{ "%.2f" | format(has_attendance_allowance[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Punctulity Allowance</strong></td>
+                        <td align='end'>
+                            {% set punctuality_allowance = doc.earnings | selectattr("salary_component", "equalto","Punctuality Allowance") | list %}
+
+                            {% if punctuality_allowance %}
+                            {{ "%.2f" | format(punctuality_allowance[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong style='display:flex; justify-content:space-between'>Extra Work Days
+                                <span>0</span></strong></td>
+                        <td align='end'>
+                            {% set extra_work_days = doc.earnings | selectattr("salary_component", "equalto", "Extra Work Days") | list %}
+
+                            {% if extra_work_days %}
+                            {{ "%.2f" | format(extra_work_days[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fuel Allowance</strong></td>
+                        <td align='end'>
+                            {{"%.2f" | format(doc.fuel_allowance) or ''}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Arrers</strong> </td>
+                        <td align='end'>
+                            {% set arrear = doc.earnings | selectattr("salary_component", "equalto", "Arrear") | list %}
+
+                            {% if arrear %}
+                            {{ "%.2f" | format(arrear[0].amount) }}
+                            {% else %}
+                            0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+                <table width="100%" border="0" style='margin-top:9px'>
+                    <tr>
+                        <td width="63%" style='border-top:1px solid #000'><strong>Total Salary</strong></td>
+                        <td width="5%" align="center" style='border-top:1px solid #000'><strong>:</strong></td>
+                        <td width="32%" align="end" style='border-top:1px solid #000'>
+                            {{"%.2f" | format(doc.custom_paid_salary_scale)}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Add : Allowance </strong></td>
+                        <td align="center"><strong>:</strong></td>
+                        <td align="end">{{"%.2f" | format(doc.custom_add_allowance)}}</td>
+                    </tr>
+                    <tr style='border-top:1px solid #000'>
+                        <td><strong>Gross Salary </strong></td>
+                        <td align="center"><strong>:</strong></td>
+                        <td align="end">{{"%.2f" | format(doc.gross_pay)}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Less : Deduction</strong></td>
+                        <td align="center"><strong>:</strong></td>
+                        <td align="end">{{"%.2f" | format(doc.total_deduction)}}</td>
+                    </tr>
+                    <tr style='border-top:1px solid #000;border-bottom:1px solid #000'>
+                        <td height="23"><strong>Net Salary</strong></td>
+                        <td align="center"><strong>:</strong></td>
+                        <td align='end'>{{"%.2f" | format(doc.net_salary)}}</td>
+                    </tr>
+                </table>
+
+                <table border="1" style='margin-top:9px font-family: Arial, sans-serif;'>
+                    <tr>
+                        <td width="154"><strong>Bank Transfer</strong></td>
+                        <td align='end' width="131"><strong>{{ doc.bank_transfer }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cash Payable</strong></td>
+                        <td align='end'><strong>{{"%.2f" | format(doc.cash_payable)}}</strong></td>
+                    </tr>
+
+                </table>
+
+    </table>
+
+
+
+    <footer>
+        <table width="70%" border="0">
+            <tr style='margin-bottom:10px'>
+                <td colspan="3" height="23"><strong>In
+                        Words</strong>&nbsp;<u>{{frappe.utils.money_in_words(doc.net_salary)}}</u></td>
+            </tr>
+            <tr style=''>
+                <td width="22%" style='border-bottom:1px solid #000'>&nbsp;</td>
+                <td width="17%">&nbsp;</td>
+                <td width="28%" style='border-bottom:1px solid #000'>&nbsp;</td>
+                <td width="33%">&nbsp;</td>
+            </tr>
+            <tr>
+                <td align='center'><strong>Paid By</strong></td>
+                <td>&nbsp;</td>
+                <td align='center'><strong>Receiver Signature</strong></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        <p><strong>* This is an auto generated report and does not require any signature</strong></p>
+        <p>&nbsp;</p>
+    </footer>
+    <p>&nbsp;</p>
+</body>
+
+</html>
