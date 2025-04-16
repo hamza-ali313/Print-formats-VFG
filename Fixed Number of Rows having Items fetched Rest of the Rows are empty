@@ -1,30 +1,13 @@
-{% set ns = {'row_count': 0} %}
-{% for i in doc.items %}
-<tr>
-  <td>{{ i.item_code or '' }}</td>
-  <td>{{ i.description or '' }}</td>
-  <td>{{ i.qty or '' }}</td>
-  <td>{{ i.uom or '' }}</td>
-  <td>{{ i.packing or '' }}</td>
-  <td>{{ i.ctn or '' }}</td>
-  <td>{{ i.get_formatted('rate') or '' }}</td>
-  <td>{{ i.get_formatted('amount') or '' }}</td>
-  <td>{{ i.cbm_vol or '' }}</td>
-</tr>
-{% set ns['row_count'] = ns['row_count'] + 1 %}
-{% endfor %}
-
-{# Add empty rows if less than 14 items #}
-{% for x in range(14 - ns['row_count']) %}
-<tr>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-</tr>
+{% set total_rows = 14 %}
+{% for i in range(total_rows) %}
+  {% set row = doc.items[i] if i < doc.items|length else None %}
+  <tr>
+    <td><div align="center">{{ row.idx if row else '' }}</div></td>
+    <td><div align="center">{{ row.item_code if row else '' }}</div></td>
+    <td><div align="center">{{ row.description if row else '' }}</div></td>
+    <td><div align="center">{{ row.qty if row else '' }}</div></td>
+    <td><div align="center">{{ row.bins if row else '' }}</div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
 {% endfor %}
