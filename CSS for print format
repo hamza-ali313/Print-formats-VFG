@@ -1,0 +1,23 @@
+td.print-format {
+background-color: #CCCCCC !important;
+
+
+}
+
+.print-format{
+font-size:12px;
+ margin-left:2mm;
+        margin-top:1mm;
+        margin-right:2mm;
+        margin-bottom:1mm;
+}
+
+.print-format table th, 
+.print-format table td {
+    padding: 4px 4px !important;/* Adjust the padding as needed */
+    margin: 1 !important;  /* Remove any margin */
+}
+
+.print-format table {
+    border-collapse: collapse; 
+}
