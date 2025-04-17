@@ -1,132 +1,150 @@
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <title>Untitled Document</title>
-    <style type="text/css">
-        .style5 {
-            font-size: 12px;
-            padding-bottom: -2px;
-            font-weight: bold;
-        }
-
-        .style6 {
-            font-size: 12px;
-            padding-bottom: -2px;
-        }
-
-        .break {
-            page-break-before: always;
-            display: none;
-        }
-    </style>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Proforma Invoice</title>
+<style type="text/css">
+  .style1 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .break {
+    page-break-before: always;
+  }
+</style>
 </head>
 
 <body>
-    {% macro header() %}
-    <header>
-        {{letter_head}}
-    </header>
-    <br />
-    <table width="50%" border="0">
-        <tr>
-            <td width="32%">Date</td>
-            <td width="68%">{{doc.get_formatted('posting_date')}}</td>
-        </tr>
-        <tr>
-            <td colspan="2"><br />The Manager <br />Askari Bank Ltd<br />SITE Super Highway-II, Karachi
-                <br /><br /><u><em><strong>Subject: Salary Transfer To Staff Account</strong></em></u>
-            </td>
-        </tr>
-    </table>
-    <table width="95%" border="0">
-        <tr>
-            <td><br /> Honorable,<br />
-                This has reference to the above subject, we request you to kindly transfer salary to staff account ,
-                Please debit our A/C# CD-2317-5 (ACBL Karachi) credit our staff account as per following details FTM
-                {{doc.select_month}}-{{doc.year}}</td>
-        </tr>
-    </table>
-    {% endmacro %}
 
-    {% set ns = {'row_count': 0} %}
-    {{ header() }}
+{% macro header() %}
+  <header style='margin-top:-10px'>
+    {{ letter_head }}
+  </header>
+  <div align="center" class="style1">PROFORMA INVOICE</div>
+  
+{% endmacro %}
 
-    <table width="100%" border="1">
-        <tr>
-            <td>
-                <div align="center" class="style5">SR#</div>
-            </td>
-            <td>
-                <div align="center" class="style5">NAME OF EMPLOYEE</div>
-            </td>
-            <td>
-                <div align="center" class="style5">ACCOUNT#</div>
-            </td>
-            <td>
-                <div align="center" class="style5">AMOUNT</div>
-            </td>
+
+{{ header() }}
+<table width="100%" style='line-height:13px'>
+    <tr>
+      <td width="16%">No.</td>
+      <td width="34%">{{ doc.custom_pi_number or ' ' }}</td>
+      <!--<td width="8%">&nbsp;</td>-->
+      <td width="10%">Date.</td>
+      <td width="32%" colspan='2'>{{ frappe.utils.get_datetime(doc.transaction_date).strftime("%d-%b-%Y") or ' ' }}</td>
+    </tr>
+    <tr>
+      <!--<td>To:</td>-->
+      <!--<td>{{ doc.custom_to or ' ' }}</td>-->
+    </tr>
+    <tr>
+      <td>Bill to :</td>
+      <td>{{ (doc.address_display | replace('None ,', '') | replace('None', '')).strip(', ') or '' }}</td>
+      <!--<td>&nbsp;</td>-->
+      <td>Ship to :</td>
+      <td colspan='2'>
+          {{ (doc.shipping_address | replace('None ,', '') | replace('None', '')).strip(', ') or (doc.address_display | replace('None ,', '') | replace('None', '')).strip(', ') }}
+      </td>
+    </tr>
+    <tr>
+      <td>Ship Date: </td>
+      <td>{{ frappe.utils.get_datetime(doc.custom_ship_date).strftime("%d-%b-%Y") or ' ' }}</td>
+      <td colspan='2'>Payment Terms: </td>
+      <td>{{ doc.payment_terms_template or '' }}</td>
+    </tr>
+    <tr>
+      <td>Price Base:</td>
+      <td>{{ doc.custom_price_base or '' }}</td>
+      <td colspan='2'>Customer PO# </td>
+      <td>{{ doc.po_no or '' }}</td>
+    </tr>
+    <tr>
+    <td width='20%'>Delivery Remarks:</td>
+      <td width='80%' colspan='4'>{{ doc.delivery_remarks or '' }}</td>
+    </tr>  
+  </table>
+{% set ns = {'row_count': 0} %}
+
+
+<table width="100%" border="1" style='line-height:12px; margin-bottom:10px'>
+  <tr style="background-color: #e4e4e4">
+    <td width="13%" align='center'><strong>Item No.</strong></td>
+    <td width="22%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
+    <td width="10%" align='right'><strong>QUANTITY</strong></td>
+    <td width="4%" align='right'><strong>UNIT</strong></td>
+    <td width="6%" align='right'><strong>PACK</strong></td>
+    <td width="5%" align='right'><strong>CTN</strong></td>
+    <td width="6%" align='right'><strong>U.PRICE</strong></td>
+    <td width="12%"align='right'><strong>AMOUNT</strong></td>
+    <td width="5%" align='right'><strong>CBM</strong></td>
+  </tr>
+
+  {% for i in doc.items %}
+    {% if ns.row_count > 0 and ns.row_count % 5 == 0 %}
+      </table>
+      <div class="break"></div>
+      {{ header() }}
+      <table width="100%" border="1" style='line-height:12px'>
+        <tr style="background-color: #e4e4e4">
+          <td width="13%" align='center'><strong>Item No.</strong></td>
+          <td width="57%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
+          <td width="5%" align='right'><strong>QUANTITY</strong></td>
+          <td width="4%" align='right'><strong>UNIT</strong></td>
+          <td width="6%" align='right'><strong>PACK</strong></td>
+          <td width="5%" align='right'><strong>CTN</strong></td>
+          <td width="6%" align='right'><strong>U.PRICE</strong></td>
+          <td width="12%" align='right'><strong>AMOUNT</strong></td>
+          <td width="5%" align='right'><strong>CBM</strong></td>
         </tr>
+    {% endif %}
+    <tr>
+      <td align='left'>{{ i.item_code or '' }}</td>
+      <td align='left'>{{ i.description or '' }}</td>
+      <td align='right'>{{ i.qty | int or '' }}</td>
+      <td align='right'>{{ i.uom or '' }}</td>
+      <td align='right'>{{ i.packing | int or '' }}</td>
+      <td align='right'>{{ i.custom_ctn_ | int or '' }}</td>
+      <td align='right'>{{ i.get_formatted('rate') or '' }}</td>
+      <td align='right'>{{ i.get_formatted('amount') or '' }}</td>
+      <td align='right'>{{ i.custom_cbm_volume or '' }}</td>
+    </tr>
+    {% set ns = ns.update({'row_count': ns.row_count + 1}) or ns %}
+  {% endfor %}
+  <tr style="background-color: #e4e4e4">
+    <td align="center"><strong>Total</strong></td>
+    <td>&nbsp;</td>
+    <td><strong>{{ doc.custom_total_qty or '' }}</strong></td>
+    <td><strong>PRS</strong></td>
+    <td>&nbsp;</td>
+    <td><strong>{{ doc.custom_total_ctn or '' }}</strong></td>
+    <td>&nbsp;</td>
+    <td><strong>{{ doc.get_formatted('total') or '' }}</strong></td>
+    <td><strong>{{ doc.custom_total_cbm_volume | float | round(2) or '' }}</strong></td>
+  </tr>
+</table>
 
-        {% for row in doc.salary_transfer_employees%}
-        {% if ns.row_count % 21 == 0 and ns.row_count > 0 %}
-        <tr class="break"></tr>
-        {{ header() }}
-        <table width="100%" border="1">
-            <tr>
-                <td>
-                    <div align="center" class="style5">SR#</div>
-                </td>
-                <td>
-                    <div align="center" class="style5">NAME OF EMPLOYEE</div>
-                </td>
-                <td>
-                    <div align="center" class="style5">ACCOUNT#</div>
-                </td>
-                <td>
-                    <div align="center" class="style5">AMOUNT</div>
-                </td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td align="center" class="style6">{{row.idx}}</div>
-                </td>
-                <td class="style6">{{row.employee_name}}</span></td>
-                <td class="style6">{{row.account_no}}</span></td>
-                <td align="right" class="style6">{{row.get_formatted('amount')}}</div>
-                </td>
-            </tr>
+<p>
+{% if doc.custom_bank_account %}
+  {% set bank_account = frappe.get_doc('Bank Account', doc.custom_bank_account) or '' %}
+  {% if bank_account %}
+    <strong>Bank Details As Follows:</strong><br />
+    <strong>{{ bank_account.bank or '' }}</strong><br />
+    {% if bank_account.custom_address %}
+    {{ bank_account.custom_address or '' }}<br />
+    {% endif %}
+    Branch Code: {{ bank_account.branch_code or '' }}<br />
+    Customer A/C No: {{ bank_account.bank_account_no or '' }}<br />
+    A/C Title: {{ bank_account.account_name or '' }}<br />
+    IBAN No. {{ bank_account.iban or '' }}<br />
+    Swift Code: {{ bank_account.swift_number or '' }}<br />
+  {% endif %}
+{% endif %}
+</p>
 
-            {% set _ = ns.update({'row_count': ns.row_count + 1}) %}
-            {%endfor%}
-        </table>
-        <br />
-        <table width="100%" border="0">
-            <tr>
-                <td width="39%">Hope for your kind favour in this regard,</td>
-                <td width="18%">&nbsp;</td>
-                <td width="8%">&nbsp;</td>
-                <td width="35%" align="right"><span style="border-bottom:2px double">{{doc.get_formatted('total') or
-                        ''}}</span></div>
-                </td>
-            </tr>
-            <tr>
-                <td><br />
-                    Thanks,</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><br />Sincerely</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+<footer style='position:fixed;bottom:0'>
+  {{ frappe.db.get_value("Letter Head", doc.letter_head, "footer") }}
+</footer>
 
 </body>
-
 </html>
