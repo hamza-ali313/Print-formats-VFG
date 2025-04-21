@@ -28,8 +28,8 @@
 {{ header() }}
 <table width="100%" style='line-height:13px'>
     <tr>
-      <td width="16%">No.</td>
-      <td width="34%">{{ doc.custom_pi_number or ' ' }}</td>
+      <td width="8%">No.</td>
+      <td width="45%">{{ doc.custom_pi_number or ' ' }}</td>
       <!--<td width="8%">&nbsp;</td>-->
       <td width="10%">Date.</td>
       <td width="32%" colspan='2'>{{ frappe.utils.get_datetime(doc.transaction_date).strftime("%d-%b-%Y") or ' ' }}</td>
@@ -41,62 +41,63 @@
     <tr>
       <td>Bill to :</td>
       <td>{{ (doc.address_display | replace('None ,', '') | replace('None', '')).strip(', ') or '' }}</td>
-      <!--<td>&nbsp;</td>-->
       <td>Ship to :</td>
       <td colspan='2'>
           {{ (doc.shipping_address | replace('None ,', '') | replace('None', '')).strip(', ') or (doc.address_display | replace('None ,', '') | replace('None', '')).strip(', ') }}
       </td>
     </tr>
+</table>
+<table width="100%" style='line-height:12px'>
     <tr>
-      <td>Ship Date: </td>
-      <td>{{ frappe.utils.get_datetime(doc.custom_ship_date).strftime("%d-%b-%Y") or ' ' }}</td>
-      <td colspan='2'>Payment Terms: </td>
-      <td>{{ doc.payment_terms_template or '' }}</td>
+      <td width='7%'>Ship Date: </td>
+      <td width='20%'>{{ frappe.utils.get_datetime(doc.custom_ship_date).strftime("%d-%b-%Y") or ' ' }}</td>
+      <td width='20%'>Payment Terms: </td>
+      <td colspan='2'>{{ doc.payment_terms_template or '' }}</td>
     </tr>
     <tr>
       <td>Price Base:</td>
       <td>{{ doc.custom_price_base or '' }}</td>
-      <td colspan='2'>Customer PO# </td>
-      <td>{{ doc.po_no or '' }}</td>
+      <td>Customer PO# </td>
+      <td colspan='2'>{{ doc.po_no or '' }}</td>
     </tr>
     <tr>
-    <td width='20%'>Delivery Remarks:</td>
+      <td width='20%'>Delivery Remarks:</td>
       <td width='80%' colspan='4'>{{ doc.delivery_remarks or '' }}</td>
     </tr>  
   </table>
-{% set ns = {'row_count': 0} %}
-
+{% set ns = {'row_count': 0, 'page': 1} %}
 
 <table width="100%" border="1" style='line-height:12px; margin-bottom:10px'>
   <tr style="background-color: #e4e4e4">
-    <td width="13%" align='center'><strong>Item No.</strong></td>
-    <td width="22%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
-    <td width="10%" align='right'><strong>QUANTITY</strong></td>
+    <td width="6%" align='center'><strong>Item No.</strong></td>
+    <td width="40%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
+    <td width="5%" align='right'><strong>Qty</strong></td>
     <td width="4%" align='right'><strong>UNIT</strong></td>
     <td width="6%" align='right'><strong>PACK</strong></td>
     <td width="5%" align='right'><strong>CTN</strong></td>
-    <td width="6%" align='right'><strong>U.PRICE</strong></td>
-    <td width="12%"align='right'><strong>AMOUNT</strong></td>
     <td width="5%" align='right'><strong>CBM</strong></td>
+    <td width="6%" align='right'><strong>U.PRICE</strong></td>
+    <td width="20%" align='right'><strong>AMOUNT</strong></td>
   </tr>
 
   {% for i in doc.items %}
-    {% if ns.row_count > 0 and ns.row_count % 5 == 0 %}
+    {% if (ns.page == 1 and ns.row_count == 3) or (ns.page > 1 and (ns.row_count - 3) % 5 == 0 and ns.row_count > 3) %}
       </table>
       <div class="break"></div>
       {{ header() }}
       <table width="100%" border="1" style='line-height:12px'>
         <tr style="background-color: #e4e4e4">
-          <td width="13%" align='center'><strong>Item No.</strong></td>
-          <td width="57%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
-          <td width="5%" align='right'><strong>QUANTITY</strong></td>
+          <td width="6%" align='center'><strong>Item No.</strong></td>
+          <td width="40%" align='center'><strong>PRODUCT DESCRIPTION</strong></td>
+          <td width="5%" align='right'><strong>Qty</strong></td>
           <td width="4%" align='right'><strong>UNIT</strong></td>
           <td width="6%" align='right'><strong>PACK</strong></td>
           <td width="5%" align='right'><strong>CTN</strong></td>
-          <td width="6%" align='right'><strong>U.PRICE</strong></td>
-          <td width="12%" align='right'><strong>AMOUNT</strong></td>
           <td width="5%" align='right'><strong>CBM</strong></td>
+          <td width="6%" align='right'><strong>U.PRICE</strong></td>
+          <td width="20%" align='right'><strong>AMOUNT</strong></td>
         </tr>
+         {% set ns = ns.update({'page': ns.page + 1}) or ns %}
     {% endif %}
     <tr>
       <td align='left'>{{ i.item_code or '' }}</td>
@@ -105,22 +106,22 @@
       <td align='right'>{{ i.uom or '' }}</td>
       <td align='right'>{{ i.packing | int or '' }}</td>
       <td align='right'>{{ i.custom_ctn_ | int or '' }}</td>
+      <td align='right'>{{ '%.3f' % i.custom_cbm_volume if i.custom_cbm_volume is not none else '' }}</td>
       <td align='right'>{{ i.get_formatted('rate') or '' }}</td>
       <td align='right'>{{ i.get_formatted('amount') or '' }}</td>
-      <td align='right'>{{ i.custom_cbm_volume or '' }}</td>
     </tr>
     {% set ns = ns.update({'row_count': ns.row_count + 1}) or ns %}
   {% endfor %}
   <tr style="background-color: #e4e4e4">
     <td align="center"><strong>Total</strong></td>
     <td>&nbsp;</td>
-    <td><strong>{{ doc.custom_total_qty or '' }}</strong></td>
-    <td><strong>PRS</strong></td>
+    <td align='right'><strong>{{ doc.custom_total_qty or '' }}</strong></td>
+    <td align='right'><strong>PRS</strong></td>
     <td>&nbsp;</td>
-    <td><strong>{{ doc.custom_total_ctn or '' }}</strong></td>
+    <td align='right'><strong>{{ doc.custom_total_ctn or '' }}</strong></td>
+    <td align='right'><strong>{{ doc.custom_total_cbm_volume | float | round(3) or '' }}</strong></td>
     <td>&nbsp;</td>
-    <td><strong>{{ doc.get_formatted('total') or '' }}</strong></td>
-    <td><strong>{{ doc.custom_total_cbm_volume | float | round(2) or '' }}</strong></td>
+    <td align='right'><strong>{{ doc.get_formatted('total') or '' }}</strong></td>
   </tr>
 </table>
 
