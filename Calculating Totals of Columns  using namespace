@@ -1,0 +1,115 @@
+{% set total_due = 0 %}
+{% set total_surcharge = 0 %}
+{% set total_paid = 0 %}
+{% set total_outstanding = 0 %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+<style type="text/css">
+<!--
+.style2 {font-size: 14px}
+-->
+</style>
+</head>
+
+<body>
+<table width="100%">
+  <tr>
+    <td><span class="style2"><strong>{{doc.customer_id or ""}}</strong></span></td>
+    <td><span class="style2">Date : {{ doc.get_formatted("posting_date") }}</span></td>
+  </tr>
+  <tr>
+    <td><span class="style2"><strong>{{doc.customer_name or ""}}</strong></span></td>
+    <td><span class="style2">Plot : <strong>{{doc.property_no or ""}} </strong></span></td>
+  </tr>
+  <tr>
+    <td><span class="style2">HOUSE NO.62, STREET NO.12, SECTOR-K-3, PHASE-III, PESHAWAR UNIVERSITY</span></td>
+    <td><span class="style2">Size : {{doc.size or ""}}</span></td>
+  </tr>
+  <tr>
+    <td><span class="style2">TOWN, PESHAWAR. </span></td>
+    <td><span class="style2">Ref. : {{doc.name or ""}}</span></td>
+  </tr>
+</table>
+<table width="100%">
+  <tr>
+    <td width="9%"><strong>Subject: </strong></td>
+    <td width="43%" style="border-bottom:2px solid #000000"><strong>REMINDER FOR PAYMENT OF MAINTENANCE ARREARS. </strong></td>
+	<td width="48%">&nbsp;</td>
+  </tr>
+</table>
+Dear Client,<br/>
+Please refer to our previous correspondence on the subject wherein we requested you to make payment of Maintenance<br/>
+Charges by the specified date(s). We had also drawn your attention to the fact that delay in payment beyond the specified date<br/>
+makes it liable to Late Payment Charges at the current bank rate. It is noted with regret that the following payment(s) are still<br/>
+appearing as arrears.
+
+{% set ns = namespace(total_due=0, total_surcharge=0, total_paid=0, total_outstanding=0) %}
+<table width="100%" border="1" bordercolor="#000000">
+  <tr>
+    <td width="25%">Description</td>
+    <td width="15%">Due Date </td>
+    <td width="14%">Due</td>
+    <td width="16%">Received</td>
+    <td width="15%"> Late pay.</td>
+    <td width="15%">Balance</td>
+  </tr>
+  {% for i in doc.installment_plan_item %}
+  <tr>
+    <td>{{i.description or ""}}</td>
+    <td>{{i.due_date or ""}}</td>
+    <td>{{i.due_amount or ""}}</td>
+    <td>{{i.paid or ""}}</td>
+    <td>{{i.surcharge or ""}}</td>
+    <td>{{i.outstanding or ""}}</td>
+  </tr>
+
+    {% set ns.total_due = ns.total_due + (i.due_amount or 0) %}
+    {% set ns.total_surcharge = ns.total_surcharge + (i.surcharge or 0) %}
+    {% set ns.total_paid = ns.total_paid + (i.paid or 0) %}
+    {% set ns.total_outstanding = ns.total_outstanding + (i.outstanding or 0) %}
+
+  {% endfor %}
+
+  <tr>
+    <td style="border:none">&nbsp;</td>
+    <td><strong>Arrears Rs. ------&gt; </strong></td>
+    <td><strong>{{ ns.total_due }}</strong></td>
+    <td><strong>{{ ns.total_paid }}</strong></td>
+    <td><strong>{{ ns.total_surcharge }}</strong></td>
+    <td><strong>{{ ns.total_outstanding }}</strong></td>  
+  </tr>
+</table>
+
+<p>Dues are still outstanding.<br/>
+  Additionally, arrears of Rs on account of Late Payment Charges on some earlier Maintenance Charges {{doc.maintenance or ""}}<br/>
+  Hence the total arrears on account of Maintenance are Rs. {{ total_outstanding }}<br/>
+  You are requested to kindly make this payment without any delay to avoid further accumulation of Late Payment<br/>
+  Charges. Thank you.<br/>
+  Yours faithfully,<br/>
+  for Maymar Housing Services (Pvt.) Ltd.<br/>
+  <br/><br/><br/><br/>
+
+<table width="100%">
+  <tr>
+    <td width="17%">MAZHAR NASEEM </td>
+    <td width="42%">&nbsp;</td>
+    <td width="41%">Please disregard if you have already paid.</td>
+  </tr>
+  <tr>
+    <td>Sr.Manager Sales </td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>E &amp; O E. </td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+</html>
