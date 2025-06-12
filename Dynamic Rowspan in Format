@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+<style type="text/css">
+<!--
+.style13 {font-size: 24px}
+.style18 {font-size: 14px}
+-->
+</style>
+</head>
+
+<body>
+    {% macro header() %}
+  <header style='margin-top:-10px'>
+   {{letter_head}}
+  </header>
+  <div align="center" class="style1">PROFORMA INVOICE</div>
+  
+{% endmacro %}
+
+
+{{ header() }}
+<table width="100%" >
+  <tr>
+   <td><div align="center" class="style13"><u>Invoice</u></div></td>
+  </tr>
+</table>
+<table width="100%" style="line-height:10px">
+  <tr>
+    <td width="13%"><span class="style18">Invoice No :</span></td>
+    <td width="40%"><span class="style18">{{doc.invoice_no or ""}}</span></td>
+    <td width="16%"><span class="style18">Date :</span></td>
+    <td width="31%"><span class="style18">{{ doc.get_formatted('date') }}</span></td>
+  </tr>
+  <tr>
+    <td height="9"><span class="style18">Shipped Per :</span></td>
+    <td><span class="style18">{{doc.shipped_per_ss or ""}}</span></td>
+    <td><span class="style18">To : </span></td>
+    <td><span class="style18">{{doc.bill_to or ""}}</span></td>
+  </tr>
+  <tr>
+    <td><span class="style18">GD No : </span></td>
+    <td><span class="style18">{{doc.gd_no or ""}}</span></td>
+    <td><span class="style18">No . Of Packages : </span></td>
+    <td><span class="style18">{{doc.no_of_packages or ""}}</span></td>
+  </tr>
+  <tr>
+    <td><span class="style18">Price Base : </span></td>
+    <td><span class="style18">{{doc.price_base or ""}}</span></td>
+    <td><span class="style18">NTN No </span></td>
+    <td><span class="style18">{{doc.ntn_no or ""}}</span></td>
+  </tr>
+  <tr>
+    <td><span class="style18">Bank Name : </span></td>
+    <td><span class="style18">{{doc.bank_name or ""}}</span></td>
+    <td><span class="style18"></span></td>
+    <td><span class="style18"></span></td>
+  </tr>
+  <tr>
+    <td><span class="style18">IBAN No : </span></td>
+    <td><span class="style18">{{doc.iban or ""}}</span></td>
+    <td><span class="style18"></span></td>
+    <td><span class="style18"></span></td>
+  </tr>
+</table>
+<table width="100%" border="1">
+  <tr>
+    <td width="10%"><span class="style18">Bill To: </span></td>
+    <td colspan="6"><span class="style18"><strong>JULA AB </strong></span></td>
+  </tr>
+  <tr>
+    <td rowspan="{{ doc.ct_ | length + 1 }}"><div align="center" class="style18">Art No <br/>
+      Size<br/>
+      Quantity<br/>
+      Cartons No<br/>
+    </div><span class="style18"></span><span class="style18"></span>
+    </td>
+    <td width="38%"><div align="center" class="style18">Product Description</div></td>
+    <td width="10%"><div align="center" class="style18">HS Code</div></td>
+    <td width="8%"><div align="center" class="style18">Quantity</div></td>
+    <td width="7%"><div align="center" class="style18">Unit</div></td>
+    <td width="9%"><div align="center" class="style18">Price</div></td>
+    <td width="14%"><div align="center" class="style18">Amount</div></td>
+  </tr>
+
+  {% for i in doc.ct_ %}
+  <tr>
+  <td><span class="style18">{{ i.item_description }}</span></td>
+    <td><div align="center" class="style18">{{ i.hs_code }}</div></td>
+    <td><div align="center" class="style18">{{ i.quantity }}</div></td>
+    
+    {% if loop.first %}
+      <td rowspan="{{ doc.ct_ | length }}"><div align="center" class="style18">{{ doc.unit or "" }}</div></td>
+      <td rowspan="{{ doc.ct_ | length }}"><div align="center" class="style18">{{ "%.2f"|format(doc.price) if doc.price else "" }}</div></td>
+      <td rowspan="{{ doc.ct_ | length }}"><div align="center" class="style18">{{ doc.get_formatted('amount') or '' }}</div></td>
+  {% endif %}  </tr>
+  {% endfor %}
+
+  <tr>
+  <td><span class="style18"></span></td>
+    <td><span class="style18">CBM: {{ doc.cbm or "" }}<br/> 
+      {{ doc.fob_karachi }}<br/>
+      Net Weight: {{ doc.net_weight or "" }}<br/>
+    Gross Weight: {{ doc.gross_weight or "" }}</span></td>
+    <td><span class="style18"></span></td>
+    <td><span class="style18"></span></td>
+    <td><span class="style18"></span></td>
+    <td><span class="style18"></span></td>
+  </tr>
+
+  <tr>
+    <td><div align="center" class="style18">TOTAL</div></td>
+    <td colspan="2"><span class="style18"></span></td>
+    <td><div align="center" class="style18">{{ doc.quantity or "" }}</div></td>
+    <td><span class="style18">PRS</span></td>
+    <td><span class="style18"></span></td>
+    <td><div align="right" class="style18">{{ doc.get_formatted('amount') or '' }}</div></td>
+  </tr>
+</table>
+  <footer style='position:fixed;bottom:0'>
+        {{ frappe.db.get_value("Letter Head", doc.letter_head, "footer") }}
+    </footer>
+</body>
+</html>
