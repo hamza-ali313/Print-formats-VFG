@@ -1,0 +1,271 @@
+< !DOCTYPE html>
+    <html>
+    <style type="text/css">
+        <!--
+        .style1 {
+            font - size: 10px
+        }
+
+        .style2 {
+            font - size: 14px
+        }
+
+        .style8 {
+            font - size: 12px;
+            font-weight: bold;
+        }
+
+        .style9 {
+            font - size: 12px
+        }
+        -->
+    </style>
+
+    <body>
+
+        <table width="100%" height="43">
+            <tr>
+                <td width="17%">{{ letter_head }}
+                <td width="83%">
+                    <div align="left" class="style2">
+                        <div align="center">
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="20%">&nbsp;</td>
+                                    <td width="39%">
+                                        <div align="center">
+                                            <strong><br>
+                                                Sunpo Industries Limited<br />
+
+                                                {% if doc.name.startswith('BPV') %}
+                                                Bank Payment Voucher
+                                                {% elif doc.payment_type == 'Pay' and doc.mode_of_payment == 'Cash' %}
+                                                Cash Payment Voucher
+                                                {% elif doc.payment_type == 'Receive' and doc.mode_of_payment == 'Cash'
+                                                %}
+                                                Cash Receipt Voucher
+                                                {% elif doc.payment_type == 'Pay' and doc.mode_of_payment == 'Bank' %}
+                                                Bank Payment Voucher
+                                                {% elif doc.payment_type == 'Receive' and doc.mode_of_payment == 'Bank'
+                                                %}
+                                                Bank Receipt Voucher
+                                                {% else %}
+                                                Payment Voucher
+                                                {% endif %}
+
+                                            </strong><br>
+                                            <strong>{{ doc.name or "" }}</strong>
+                                        </div>
+                                    </td>
+
+                                    <td width="41%">&nbsp;</td>
+                                </tr>
+                            </table>
+                            <strong><br />
+                            </strong>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+        <table width="100%" style="line-height:5px">
+            <tr>
+                <td width="49%"><span class="style9"><strong>Source Name:</strong> {{ doc.mode_of_payment or "" }} {{
+                        doc.paid_from_name or "" }}</span></td>
+                <td width="15%">&nbsp;</td>
+                <td width="15%"><span class="style8">Date</span></td>
+                <td width="21%">{{ doc.get_formatted('posting_date') or "" }} &nbsp;</td>
+            </tr>
+            <tr>
+                <td><span class="style9"><strong>Paid to</strong> : {{ doc.party or "" }}</span></td>
+                <td>&nbsp;</td>
+                <td><span class="style9"><strong>Exch. Rate</strong></span></td>
+                <td>{{ doc.source_exchange_rate or ""}}</td>
+            </tr>
+            <tr>
+                <td><span class="style9"><strong>Cheque No :</strong> {{ doc.reference_no or "" }}</span></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><span class="style9"></span></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        <table width="100%" border="1" style="line-height:5px">
+            <tr>
+                <th width="12%"><span class="style8 style9">A/c Code</span></th>
+                <th width="29%"><span class="style8 style9">A/c Name</span></th>
+                <th width="22%"><span class="style8 style9">Against Bill No</span></th>
+                <th width="18%"><span class="style8 style9">Amount USD</span></th>
+                <th width="19%"><span class="style8 style9">Amount PKR</span></th>
+            </tr>
+            {% set acc = frappe.get_doc("Account", doc.paid_from) %}
+
+            {% set total_other_currency = namespace(value=0) %}
+             {% set rate = doc.source_exchange_rate or 0 %}
+            {% set currency = doc.paid_to_account_currency or "" %}
+
+            {% for i in doc.references %}
+            {% set pkr = namespace(total=0) %}
+            {% if i.reference_doctype == "Purchase Invoice" %}
+            {% set invoice = frappe.get_doc("Purchase Invoice", i.reference_name) %}
+            {% set pkr.total = invoice.grand_total %}
+            {% endif %}
+
+
+            {% set allocated = i.allocated_amount or 0 %}
+            {% set result = 0 %}
+
+            {% if allocated and rate and currency %}
+            {% if currency == "USD" %}
+            {% set result = (allocated / rate) | round(2) %}
+            {% set total_other_currency.value = total_other_currency.value + result %}
+            {% elif currency == "PKR" %}
+            {% set result = (allocated * rate) | round(2) %}
+            {% set total_other_currency.value = total_other_currency.value + result %}
+            {% endif %}
+            {% endif %}
+
+            <tr>
+                <td><span class="style9">{{ acc.account_number or "" }}</span></td>
+                <td><span class="style9">{{ acc.account_name or "" }}</span></td>
+                <td><span class="style9">{{ i.reference_name or "" }}</span></td>
+
+                <td style="text-align:right">
+                    {% if currency == "PKR" %}
+                    <span class="style9">
+                        {{ frappe.utils.fmt_money(result or 0, currency = "", precision = 2) if result else "" }}
+                    </span>
+                    {% elif currency == "USD" %}
+                    {{ "{:,.2f}".format(i.allocated_amount or 0) if i.allocated_amount else "" }}
+                    {% endif %}
+                </td>
+
+                <td align="right">
+                    <span class="style9">
+                        {% if currency == "PKR" %}
+                        {{ "{:,.2f}".format(i.allocated_amount or 0) if i.allocated_amount else "" }}
+                        {% elif currency == "USD" %}
+                        <span class="style9">
+                            {{ frappe.utils.fmt_money(result or 0, currency = "", precision = 2) if result else "" }}
+                        </span>
+                        {% endif %}
+
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+
+
+            <tr>
+                <th colspan="3">
+                    <div align="right" class="style1 style9"><strong>Total</strong></div>
+                </th>
+                <th width="19%">
+                    {% if currency == "PKR" %}
+                    <div align="right" class="style9"> 
+                    {{ frappe.utils.fmt_money(total_other_currency.value or 0, currency = "", precision = 2) if total_other_currency.value else "" }}
+                    </div>
+                    {% elif currency == "USD" %}
+                    <div align="right" class="style9">
+                        <strong>
+                            {{ "{:,.2f}".format(doc.references | map(attribute = "allocated_amount") | sum) }}
+                        </strong>
+                    </div>
+                    {% endif %}
+                </th>
+                <th width="18%">
+                    {% if currency == "PKR" %}
+                    <div align="right" class="style9"><strong>{{ "{:,.2f}".format(doc.references | map(attribute ="allocated_amount") | sum) }} </strong></div>
+                    {% elif currency == "USD" %}
+                    <div align="right" class="style9"> {{ frappe.utils.fmt_money(total_other_currency.value or 0,
+                        currency = "", precision = 2) if total_other_currency.value else "" }}</div>
+                    {% endif %}
+                </th>
+            </tr>
+        </table>
+        <br>
+
+        <table width="100%">
+
+            <tr>
+                <td height="29" colspan="9"><span class="style9">On Account of : {{ doc.remarks or ""}}</span></td>
+            </tr>
+
+            <tr>
+                <td width="7%" height="29"><span class="style1"></span></td>
+                <td width="16%"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="15%"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="17%"><span class="style1"></span></td>
+                <td width="6%"><span class="style1"></span></td>
+                <td width="16%"><span class="style1"></span></td>
+                <td width="5%"><span class="style1"></span></td>
+            </tr>
+            <tr>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+            </tr>
+            <tr>
+                <td width="7%" height="29"><span class="style1"></span></td>
+                <td width="16%"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="15%"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="17%"><span class="style1"></span></td>
+                <td width="6%"><span class="style1"></span></td>
+                <td width="16%"><span class="style1"></span></td>
+                <td width="5%"><span class="style1"></span></td>
+            </tr>
+            <tr>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+                <td align="center">&nbsp;</td>
+                <td><span class="style1"></span></td>
+            </tr>
+            <tr>
+                <td width="7%" height="29"><span class="style1"></span></td>
+                <td width="16%" style="border-bottom:1px solid #000000"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="15%" style="border-bottom:1px solid #000000"><span class="style1"></span></td>
+                <td width="9%"><span class="style1"></span></td>
+                <td width="17%" style="border-bottom:1px solid #000000"><span class="style1"></span></td>
+                <td width="6%"><span class="style1"></span></td>
+                <td width="16%" style="border-bottom:1px solid #000000"><span class="style1"></span></td>
+                <td width="5%"><span class="style1"></span></td>
+            </tr>
+            <tr>
+                <td><span class="style1"></span></td>
+                <td align="center"><span class="style9">Prepared by</span></td>
+                <td>&nbsp;</td>
+                <td align="center"><span class="style9">Checked by</span></td>
+                <td>&nbsp;</td>
+                <td align="center"><span class="style9">Approved by</span></td>
+                <td>&nbsp;</td>
+                <td align="center"><span class="style9">Received by</span></td>
+                <td><span class="style1"></span></td>
+            </tr>
+        </table>
+
+    </body>
+
+    </html>
