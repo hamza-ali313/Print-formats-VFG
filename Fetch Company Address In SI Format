@@ -1,0 +1,14 @@
+ {%- set company_address = frappe.db.get_value(
+                        "Dynamic Link",
+                        {"link_doctype": "Company", "link_name": doc.company, "parenttype": "Address"},
+                        "parent"
+                    ) -%}
+
+                {%- if company_address -%}
+                    {{ frappe.db.get_value("Address", company_address, "address_line1") or '' }}
+                    {{ frappe.db.get_value("Address", company_address, "address_line2") or ''}}
+                    {{ frappe.db.get_value("Address", company_address, "city") or '' }}
+                    {{ frappe.db.get_value("Address", company_address, "emirate") or ''}}
+                    {{ frappe.db.get_value("Address", company_address, "country") or '' }}
+                    {{ frappe.db.get_value("Address", company_address, "pincode") or ''}}
+                {%- endif -%}
