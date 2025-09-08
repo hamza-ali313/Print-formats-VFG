@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <title>Proforma Invoice</title>
+  <style type="text/css">
+    .style1 {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .break {
+      page-break-before: always;
+    }
+
+    @page {
+      size: A4;
+      margin: 20mm;
+      @bottom-right {
+        content: "Page " counter(page);
+        font-size: 10px;
+      }
+    }
+
+    body {
+      counter-reset: page 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% macro header() %}
+  <header style='margin-top:0'>
+    {{ letter_head }}
+  </header>
+  <div align="center" class="style1">PROFORMA INVOICE</div>
+  {% endmacro %}
+
+  {{ header() }}
+  <table width="100%" border="1" cellpadding="2">
+    <tr>
+      <th scope="col"><table width="100%" border="0" style='line-height:11.5px'>
+    <tr>
+      <td width="18%">No.</td>
+      <td width="33%">{{ doc.custom_pi_number or doc.name or "" }}</td>
+      <td width="18%">Date.</td>
+      <td width="31%" colspan='2'>{{ frappe.utils.get_datetime(doc.transaction_date).strftime("%d-%b-%Y") or ' ' }}</td>
+    </tr>
+    <tr>
+      <td>Bill to :</td>
+      <td>
+        {{ doc.customer_address | replace('-Billing', '') or '' }}<br />
+        {{ (doc.address_display | replace('None ,', '') | replace('Countrys', '') | replace('None', '')).strip(', ') or '' }}
+      </td>
+      {% if doc.shipping_address %}
+      <td>Ship to :</td>
+      <td colspan='2'>
+        {{ doc.shipping_address_name | replace('-Shipping', '') | replace('-Billing', '') | replace('-1', '') | replace('-2', '') or '' }}<br />
+        {{ (doc.shipping_address | replace('None ,', '') | replace('Countrys', '') | replace('None', '')).strip(', ') or '' }}
+      </td>
+      {% endif %}
+    </tr>
+    <tr>
+      <td>Customer PO#</td>
+      <td>{{ doc.po_no or '' }}</td>
+      <td>Payment Terms: </td>
+      <td colspan='2'>{{ doc.payment_terms_template or '' }}</td>
+    </tr>
+    <tr>
+      <td>Ship Date: </td>
+      <td>{{ frappe.utils.get_datetime(doc.delivery_date).strftime("%d-%b-%Y") or ' ' }}</td>
+      <td>Incoterm:</td>
+      <td colspan='2'>{{ doc.custom_price_base or '' }}</td>
+    </tr>
+    <tr>
+      <td colspan="5">{{ doc.delivery_remarks or '' }}</td>
+    </tr>
+</table></th>
+    </tr>
+  </table>
+
+
+  {% set ns = {'row_count': 0, 'page': 1} %}
+
+  <table width="100%" border="1" style='line-height:11px; margin-bottom:10px'>
+    <tr style="background-color: #e4e4e4">
+      <td width="16%" align='center'><div align="left"><strong>ARTICLE #</strong></div></td>
+      <td width="35%" align='center'><div align="left"><strong>PRODUCT DESCRIPTION</strong></div></td>
+      <td width="11%" align='right'><strong>QTY</strong></td>
+      <td width="4%" align='right'><strong>UOM</strong></td>
+      <td width="17%" align='right'><strong>U.PRICE</strong></td>
+      <td width="17%" align='right'><strong>AMOUNT</strong></td>
+    </tr>
+
+    {% for i in doc.items %}
+      {% if (ns.page == 1 and ns.row_count == 8) or (ns.page > 1 and (ns.row_count + 1) % 9 == 0 and ns.row_count > 7) %}
+</table>
+        <div class="break"></div>
+        {{ header() }}
+        <table width="100%" border="1" style='line-height:11px'>
+          <tr style="background-color: #e4e4e4">
+            <td width="16%" align='center'><div align="left"><strong>ARTICLE #</strong></div></td>
+            <td width="35%" align='center'><div align="left"><strong>PRODUCT DESCRIPTION</strong></div></td>
+            <td width="11%" align='right'><strong>QTY</strong></td>
+            <td width="4%" align='right'><strong>UOM</strong></td>
+            <td width="17%" align='right'><strong>U.PRICE</strong></td>
+            <td width="17%" align='right'><strong>AMOUNT</strong></td>
+          </tr>
+          {% set ns = ns.update({'page': ns.page + 1}) or ns %}
+      {% endif %}
+      <tr>
+        <td align='left'>{{ i.item_code or '' }}</td>
+        <td align='left'>{{ i.description or '' }}</td>
+        <td align='right'>{{ i.qty | int or '' }}</td>
+        <td align='right'>{{ i.uom or '' }}</td>
+        <td align='right'>{{ i.get_formatted('rate') or '' }}</td>
+        <td align='right'>{{ i.get_formatted('amount') or '' }}</td>
+      </tr>
+      {% set ns = ns.update({'row_count': ns.row_count + 1}) or ns %}
+    {% endfor %}
+
+    <tr style="background-color: #e4e4e4">
+      <td align="center"><strong>Total</strong></td>
+      <td></td>
+      <td align='right'><strong> {{ doc.custom_total_qty | float | round(0, 'common') | int if doc.custom_total_qty else '' }} </strong> </td>
+      <td align='right'><strong>PRS</strong></td>
+      <td></td>
+      <td align='right'><strong>{{ doc.get_formatted('total') or '' }}</strong></td>
+    </tr>
+  </table>
+
+  {% if doc.taxes %}
+  <table width="40%" border="1" align="right" style="line-height:0px">
+    <tr>
+      <td><strong>Total Amount </strong></td>
+      <td align="right">{{ doc.get_formatted('total') or '' }}</td>
+    </tr>
+    <tr>
+      <td><strong>{{ doc.taxes[0].description if doc.taxes else 'Sales Taxes' }}</strong></td>
+      <td align="right">{{ doc.get_formatted('total_taxes_and_charges') or '' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Grand Total</strong></td>
+      <td align="right">{{ doc.get_formatted('grand_total') or '' }}</td>
+    </tr>
+  </table>
+  <br /><br /><br />
+  {% endif %}
+
+  {% if ns.row_count == doc.items|length %}
+   <p style="width: 100%; text-align: center; font-weight: bold; text-transform: uppercase; position:fixed;bottom:180px">
+      System Generated, Signature Not Required
+  </p>
+  {% endif %}
+
+  <footer style='position:fixed; bottom:0'>
+    {{ frappe.db.get_value("Letter Head", doc.letter_head, "footer") }}
+  </footer>
+<style>
+    @page {
+        size: A4;
+        margin: 20mm;
+        @bottom-right {
+            content: "Page # " counter(page) " of " counter(pages);
+            font-size: 10px;
+        }
+    }
+
+    body {
+        counter-reset: page 1;
+    }
+</style>
+<div class="page-break"></div>
+
+    {% macro header() %}
+    <header style='margin-top:-10px'>
+        {{ letter_head }}
+    </header>
+    <div align="center" class="style1">Bank Details</div>
+    {% endmacro %}
+
+    {{ header() }}
+    <br />
+
+    <table width="100%" style="line-height:12px" border='1'>
+        <tr>
+            <td width="22%">Proforma Invoice: </td>
+            <td width="37%">{{ doc.name or '' }}</td>
+            <td width="18%">Date: </td>
+            <td width="23%">{{ frappe.utils.get_datetime(doc.transaction_date or '').strftime("%d-%b-%Y") or ' ' }}</td>
+        </tr>
+    </table>
+
+    <br /><br />
+
+    {% if doc.custom_bank_account %}
+    {% set bank_account = frappe.get_doc('Bank Account', doc.custom_bank_account) or '' %}
+    {% if bank_account %}
+    <strong>{{ bank_account.bank or '' }}</strong><br />
+    {% if bank_account.custom_address %}
+    {{ bank_account.custom_address or '' }}<br />
+    {% endif %}
+    Branch Code: {{ bank_account.branch_code or '' }}<br />
+    A/C No: {{ bank_account.bank_account_no or '' }}<br />
+    A/C Title: {{ bank_account.account_name or '' }}<br />
+    IBAN No. {{ bank_account.iban or '' }}<br />
+    Swift Code: {{ bank_account.swift_number or '' }}<br />
+    {% endif %}
+    {% endif %}
+
+    <br /><br />
+    <table width="100%" style="line-height: 0px;">
+  <tr><td><strong style="color:red;">NOTE:</strong></td></tr>
+  <tr><td><strong style="color:red;">OUR ABOVE BANK DETAILS HAVE ALREADY BEEN VERIFIED AND UPDATED</strong></td></tr>
+  <tr><td><strong style="color:red;">IN YOUR RECORDS FOR PAYMENT PURPOSES. IN CASE YOU RECEIVE ANY</strong></td></tr>
+  <tr><td><strong style="color:red;">OTHER BANK DETAILS IN OUR COMMERCIAL INVOICE, KINDLY DO NOT</strong></td></tr>
+  <tr><td><strong style="color:red;">ENTERTAIN THE SAME AND GET IT RECONFIRMED BY US ON PHONE</strong></td></tr>
+  <tr><td><strong style="color:red;">00923152300653.</strong></td></tr>
+</table>
+
+
+
+</body>
+
+</html>
