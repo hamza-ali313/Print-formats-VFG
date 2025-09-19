@@ -1,0 +1,11 @@
+{% set address = frappe.db.get_value(
+    "Dynamic Link",
+    {"link_doctype": "Customer", "link_name": doc.customer, "parenttype": "Address"},
+    "parent"
+) %}
+
+{% if address %}
+    {{ frappe.get_doc("Address", address).get_display() }}
+{% else %}
+    No address found.
+{% endif %}
