@@ -1,0 +1,1 @@
+<td style="padding: 4px; text-align: right;">{{doc.currency }} {{ "{:,.2f}".format(total_amount) }}</td>
