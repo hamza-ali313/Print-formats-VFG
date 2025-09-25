@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bank Payment Voucher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .header {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .top-info {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .top-info td {
+            padding: 3px;
+        }
+
+        table.voucher {
+            width: 100%;
+
+        }
+
+        table.voucher th,
+        table.voucher td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .footer td {
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .style1 {
+            font-size: 18px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header style1">
+        {{doc.company}} <br>
+        <!--BANK PAYMENT VOUCHER / BANK RECEIVE VOUCHER    -->
+
+        {% if doc.payment_type == "Pay" %}
+        {% if doc.mode_of_payment == "Cash" %}
+        CASH
+        {%else %}
+        BANK
+        {% endif %}
+        PAYMENT VOUCHER
+        {% else %}
+        {% if doc.mode_of_payment == "Cash" %}
+        CASH
+        {%else %}
+        BANK
+        {% endif %}
+        RECEIVE VOUCHER
+        {% endif %}
+
+    </div>
+
+    <table width="100%" style="line-height:10px">
+        <tr>
+            <td width="20%">Voucher No:</td>
+            <td width="50%">{{doc.name or ""}}</td>
+            <td width="18%" style="text-align:right;">
+                <div align="left">Voucher Date:</div>
+            </td>
+            <td width="10%">{{doc.get_formatted('posting_date') or ""}}</td>
+        </tr>
+        <tr>
+            <td>Mode Of Payment:</td>
+            <td>{{doc.mode_of_payment or ""}}</td>
+            <td style="text-align:right;">
+                <div align="left">EXCHANGE Rate:</div>
+            </td>
+            <td>
+                {% if doc.references and doc.references[0].exchange_rate %}
+                {{ doc.references[0].exchange_rate }}
+                {% else %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="left">Chq #:</div>
+            </td>
+            <td>{{doc.reference_no or ""}}</td>
+            <td style="text-align:right;">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+
+    <table width="100%" border="1">
+        <tr>
+            <td width="19%">Account ID</td>
+            <td width="19%">Account Name</td>
+            <td width="16%">Narration</td>
+            <td width="16%">Debit </td>
+            <td width="16%">Credit </td>
+        </tr>
+        {% if doc.payment_type == 'Pay' %}
+        <tr>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_to,'account_number') or ""}}</td>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_to,'account_name') or ""}} <br />
+                {{doc.party_name or ""}}
+            </td>
+            <td width="16%">{{doc.remarks or ""}}</td>
+            <td width="16%">
+                <p>{{doc.get_formatted('paid_amount') or ''}}
+            </td>
+            <td width="16%">
+                <p>&nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_from,'account_number') or ""}}</td>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_from,'account_name') or ""}}</td>
+            <td width="16%">{{doc.remarks or ""}}</td>
+            <td width="16%">
+                <p>&nbsp;
+            </td>
+            <td width="16%">
+                <p>{{doc.get_formatted('paid_amount') or ''}}
+            </td>
+        </tr>
+        {% elif doc.payment_type == 'Receive' %}
+        <tr>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_from,'account_number') or ""}}</td>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_from,'account_name') or ""}} <br />
+                {{doc.party_name or ""}}
+            </td>
+            <td width="16%">{{doc.remarks or ""}}</td>
+            <td width="16%">
+                <p>&nbsp;
+            </td>
+            <td width="16%">
+                <p>{{doc.get_formatted('paid_amount') or ''}}
+            </td>
+        </tr>
+        <tr>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_to,'account_number') or ""}}</td>
+            <td width="19%">{{ frappe.db.get_value('Account',doc.paid_to,'account_name') or ""}}</td>
+            <td width="16%">{{doc.remarks or ""}}</td>
+            <td width="16%">
+                <p>{{doc.get_formatted('paid_amount') or ''}}
+            </td>
+            <td width="16%">
+                <p>&nbsp;
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td colspan="3" align="left" class="style12"><strong>Totals:
+            {% set amount_words = frappe.utils.money_in_words(doc.paid_amount, doc.paid_from_account_currency) %}
+            {{ amount_words }}
+            <!--<td><p>{{ doc.references | map(attribute='outstanding_amount') | join(', ') }}</td>-->
+            <!--<td><p>{{ doc.references | map(attribute='allocated_amount') | join(', ') }}</td>-->
+            <td>
+                <p>{{ doc.get_formatted('paid_amount') or '' }}
+            </td>
+            <td>
+                <p>{{ doc.get_formatted('paid_amount') or ''}}
+            </td>
+        </tr>
+    </table>
+
+
+    <!-- <table class="voucher">
+        <tr>
+            <th>ACCOUNT TYPE/CATEGORY</th>
+            <th>INVOICE</th>
+            <th>NARRATION</th>
+            <th>DEBIT</th>
+            <th>CREDIT</th>
+        </tr>
+        {% for i in doc.references %}
+        <tr>
+            <td>{{ i.reference_doctype or "" }}</td>
+            <td>{{ i.reference_name or "" }}</td>
+            <td>{{i.remarks or ""}}</td>
+            <td>{{ i.outstanding_amount }}</td>
+            <td>{{ i.allocated_amount or "" }}</td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+            <td colspan="3" style="text-align:left;">
+                <b>TOTAL IN WORDS: {{ frappe.utils.money_in_words(doc.unallocated_amount or 0) }}</b>
+            </td>
+            <td>{{ doc.unallocated_amount }}</td>
+            <td>{{ doc.total_allocated_amount or "" }}</td>
+        </tr>
+    </table> -->
+
+    <table width="100%">
+        <tr>
+            <td width="14%">Remarks:</td>
+            <td width="86%">{{doc.remarks or ""}}</td>
+        </tr>
+    </table>
+
+
+    <table class="footer">
+        <tr>
+            <td>Prepared by</td>
+            <td>Checked by</td>
+            <td>Approved by</td>
+            <td>Received by</td>
+        </tr>
+    </table>
+    <br>
+    <table width="100%">
+        <tr>
+            <td width="15%">User Name </td>
+            <td width="85%">
+                Print Date Time: {{ frappe.utils.now_datetime().strftime("%d-%b-%Y %H:%M:%S") }}
+                Printed by {{ frappe.session.user }}
+            </td>
+
+        </tr>
+    </table>
+
+</body>
+
+</html>
