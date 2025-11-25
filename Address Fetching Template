@@ -1,11 +1,17 @@
-{% set address = frappe.db.get_value(
+  {% set compaddress = frappe.db.get_value(
     "Dynamic Link",
-    {"link_doctype": "Customer", "link_name": doc.customer, "parenttype": "Address"},
+    {"link_doctype": "Company", "link_name": doc.company, "parenttype": "Address"},
     "parent"
 ) %}
 
-{% if address %}
-    {{ frappe.get_doc("Address", address).get_display() }}
+{% if compaddress %}
+  {% set compadr = frappe.get_doc("Address", compaddress) %}
 {% else %}
-    No address found.
+  {% set compadr = None %}
 {% endif %}
+
+
+ <strong>Company Name: {{ doc.company or ''}}</strong> <br />
+            <strong>Address: {{compadr.address_line1 or ''}}</strong> <br />
+            <strong>Emirate: {{compadr.emirate or ''}}</strong><br />
+            <strong>TRN: {{frappe.db.get_value("Company", doc.company, "tax_id")}} </strong>
