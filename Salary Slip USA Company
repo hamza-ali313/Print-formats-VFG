@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+<style type="text/css">
+<!--
+.style1 {
+	font-size: 18px;
+	font-weight: 300;
+	font-family: 'HelveticaNeueMedium';
+	
+}
+
+.style3 {font-size: 13px}
+.style4 {font-size: 9px}
+.style6 {font-size: 13px; font-weight: bold; }
+.micr {
+    font-family: 'E-13B';
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+.style10 {
+	font-size: 12px;
+	font-weight:700;
+}
+.style11 {font-size: 17px;  font-family: 'times'; 	font-weight: 900;}
+.style12 {font-size: 9px}
+.style14 {font-size: 9px}
+.style15 {font-size: 9px}
+.style16 {font-size: 16px}
+.style13 {font-size: 13px; font-family: 'HelveticaNeueUltraLight';}
+-->
+@font-face {
+ font-family: 'MICR';
+ src: url('https://erp.speciapro.com/files/micr-plain.ttf') format('truetype');
+}
+@font-face {
+ font-family: 'SG';
+ src: url('https://erp.speciapro.com/files/ScienceGothic.ttf') format('truetype');
+}
+@font-face {
+ font-family: 'times';
+ src: url('https://erp.speciapro.com/files/times.ttf') format('truetype');
+}
+@font-face {
+ font-family: 'HelveticaNeueRoman';
+ src: url('https://erp.speciapro.com/files/HelveticaNeueRoman.otf') format('truetype');
+}
+@font-face {
+ font-family: 'HelveticaNeueThin';
+ src: url('https://erp.speciapro.com/files/HelveticaNeueThin.otf') format('truetype');
+}
+@font-face {
+ font-family: 'HelveticaNeueUltraLight';
+ src: url('https://erp.speciapro.com/files/HelveticaNeueUltraLight.otf') format('truetype');
+}
+@font-face {
+ font-family: 'helvetica';
+ src: url('https://erp.speciapro.com/files/HelveticaNeueHeavy.otf') format('truetype');
+}
+@font-face {
+ font-family: 'HelveticaNeueMedium';
+ src: url('https://erp.speciapro.com/files/HelveticaNeueMedium.otf') format('truetype');
+}
+@font-face {
+ font-family: 'ARIALI 1';
+ src: url('https://erp.speciapro.com/files/ARIALI 1.TTF') format('truetype');
+}
+.micr-line {
+ font-family: 'MICR';
+ font-size: 16px;
+ letter-spacing: 2px;
+}
+.sg_font {
+    font-family: 'SG';
+    font-size: 12px;
+    font-weight:light;
+    letter-spacing: -1px;
+}
+
+</style>
+
+
+</head>
+
+<body>
+<table width="100%" style="line-height:12px">
+  <tr>
+    <td width="6%">&nbsp;</td>
+    <td width="30%" align='center'><span class="style1">{{ (doc.company or "").upper() }}</span><br />
+      <span class="style4">{%- set company_address = frappe.db.get_value(
+                        "Dynamic Link",
+                        {"link_doctype": "Company", "link_name": doc.company, "parenttype": "Address"},
+                        "parent"
+                    ) -%}
+
+                {%- if company_address -%}
+                    {{ (frappe.db.get_value("Address", company_address, "address_line1") or '').upper() }}
+                {%- endif -%}</span></td>
+    <td width="21%">&nbsp;</td>
+    <td width="14%"><span class="style4"><b>{{doc.bank_name or ""}}</b></span></td>
+    <td colspan="2"><div align="right" ><span class="style1" style='font-family: "SG"'>{{doc.custom_cheque_no_1 or ""}}</span></div></td>
+  </tr>
+    <tr style="line-height:1px">
+    <td width="6%">&nbsp;</td>
+    <td width="30%">&nbsp;</td>
+    <td width="21%">&nbsp;</td>
+    <td width="14%">&nbsp;</td>
+    <td width="6%" ><span class="style3 sg_font">Date</span></td>
+
+    <td width="23%" style="border-bottom:1px solid #000000;  font-family: 'times';"><div align="center"><span class="style3">{{ frappe.utils.get_datetime(doc.posting_date).strftime("%m/%d/%Y") }}</span></div></td>
+    </tr>
+</table>
+<table width="100%" style="line-height:0px">
+  <tr style="line-height:0px">
+    <td width="13%" class='style3 sg_font'>Pay to the</td>
+    <td width="55%"></td>
+    <td width="3%"></td>
+    <td width="20%"></td>
+  </tr>
+  <tr style="line-height:0px">
+    <td width="13%" class='style3 sg_font'>Order of</td>
+    <td width="57%" style="border-bottom:1px solid #000000"><span class="style11">{{doc.employee_name or ""}}</span></td>
+    <td width="3%"><div align="center" class="style6 style16" style='font-family: "font-family: 'ARIALI 1';";'>$</div></td>
+    <td width="21%" style="border-bottom:1px solid #000000"><div align="center" class="style10" style='font-size: 16px; font-family: "times"'>**{{doc.net_pay}}</div></td>
+  </tr>
+</table>
+<table width="100%">
+    <tr>
+    <td width="90%" style="border-bottom:1px solid #000000; font-family: 'times'; font-style:italic"><span class="style10">{{(doc.total_in_words or "").upper()}}****</span></td>
+    <td width="10%" class="style3 sg_font" style='vertical-align: bottom;'>Dollers</td>
+  </tr>
+</table>
+<table width="100%" style='line_height:0px;'>
+  <tr>
+    <td width="12%">&nbsp;</td>
+    <td width="88%" style='font-size: 11px;'><b class='style13'>{{doc.employee_name or ""}}</b><br />{{ frappe.db.get_value("Employee", doc.employee, "current_address") }}</td>
+  </tr>
+</table>
+<table width="100%" style="line-height:1px">
+  <tr>
+    <td width="8%"><span class="style3 sg_font">Memo</span></td>
+    <td width="48%" style="border-bottom:1px solid #000000;  font-family: 'times';"><span class="style3">Pay Period : {{ frappe.utils.get_datetime(doc.start_date).strftime("%m/%d/%Y") }}-{{ frappe.utils.get_datetime(doc.end_date).strftime("%m/%d/%Y") }}</span></td>
+    <td width="14%">&nbsp;</td>
+    <td width="30%" style="border-bottom:1px solid #000000"><div align="center" class="style3">{{doc.custom__signeture_attechment or ""}}</div></td>
+  </tr>
+</table>
+<div class="micr-line" style='text-align:center; margin: 20px 0 20px -140px'>
+    {{ doc.custom_micr_number or "" }}
+</div>
+
+<table width="100%">
+  <tr>
+    <td ><span class="style1" style='font-size:16px;'>{{ (doc.company or "").upper() }}</span><br /></td>
+    <td width="26%"><div align="right"><span class="sg_font" style='font-size:16px;'>{{doc.custom_cheque_no_1 or ""}}</span></div></td>
+  </tr>
+</table>
+
+<table width="97%" align='center' style='font-size:10px; line-height:0px'>
+  <tr>
+    <td width="50%"><p style="line-height:13px">Employee</p>
+    <p style="line-height:10px">{{doc.employee_name or ""}} {{ frappe.db.get_value("Employee", doc.employee, "current_address") }}</p>
+<table width="110%" style='font-size:10px; line-height:0px; margin:0 0 0 -10px'>
+  <tr>
+    <td width='44%'>Earnings&nbsp;and&nbsp;Hours</td>
+    <td width='5%'>Qty</td>
+    <td width='5%'>Rate</td>
+    <td width='25%' align='right'>Current</td>
+    <td width='25%' align='right'>YTD&nbsp;Amount</td>
+  </tr>
+  {% for row in doc.earnings %}
+  <tr>
+    <td><span class="style12">{{row.salary_component or ""}}</span></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+    <td align='right'><span class="style12">{{row.get_formatted('amount')}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('year_to_date')}}</span></td>
+  </tr>
+  {% endfor %}
+</table>
+<table width="110%" style='font-size:10px; line-height:0px; margin:0 0 0 -10px'>
+    <tr>
+    <td width='54%'>Taxes</td>
+    <td width='28%' align='right'>Current</td>
+    <td width='28%' align='right'> YTD&nbsp;Amount</td>
+  </tr>
+  {% for row in doc.deductions %}
+  <tr>
+    <td><span class="style12">{{row.salary_component or ""}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('amount')}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('year_to_date')}}</span></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td ><span class="style14">Net Pay</span></td>
+    <td align='right'><span class="style12">{{doc.get_formatted('net_pay') or ""}}</span></td>
+    <td align='right'><span class="style12">{{doc.get_formatted('year_to_date') or ""}}</span></td>
+  </tr>
+</table>
+
+{% set full_ssn = frappe.db.get_value('Employee', doc.employee, 'custom_ssn') %}
+{% set last_part = full_ssn.split('-')[-1] %}	</td>
+    <td width="50%"><p style="line-height:13px">SSN </p> <p style="line-height:5px">***-**-{{last_part}}</p> 
+<table width="100%" style='font-size:10px; line-height:0px'>
+  <tr>
+    <td width="63%">Pay Period: {{ frappe.utils.get_datetime(doc.start_date).strftime("%m/%d/%Y") }}-{{ frappe.utils.get_datetime(doc.end_date).strftime("%m/%d/%Y") }}</td>
+    <td width="38%">Pay Date:{{ frappe.utils.get_datetime(doc.posting_date).strftime("%m/%d/%Y") }}</td>
+  </tr>
+</table>
+
+	</td>
+  </tr>
+</table>
+
+
+<br />
+<table width="100%">
+  <tr>
+   <td width="63%"><span class="style4">{{ (doc.company or "")}}</span>
+      <span class="style15">{%- set company_address = frappe.db.get_value(
+                        "Dynamic Link",
+                        {"link_doctype": "Company", "link_name": doc.company, "parenttype": "Address"},
+                        "parent"
+                    ) -%}
+
+                {%- if company_address -%}
+                    {{ frappe.db.get_value("Address", company_address, "address_line1") or '' }}
+                {%- endif -%}</span></td>
+    <td width="37%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td ><span class="style1" style='font-size:16px;'>{{ (doc.company or "").upper() }}</span><br /></td>
+    <td width="37%"><div align="right"><span class=" sg_font" style='font-size:16px;'>{{doc.custom_cheque_no_1 or ""}}</span></div></td>
+  </tr>
+</table>
+<table width="97%" align='center' style='font-size:10px; line-height:0px'>
+  <tr>
+    <td width="50%"><p style="line-height:13px">Employee</p>
+    <p style="line-height:10px">{{doc.employee_name or ""}} {{ frappe.db.get_value("Employee", doc.employee, "current_address") }}</p>
+<table width="110%" style='font-size:10px; line-height:0px; margin:0 0 0 -10px''>
+  <tr>
+    <td width='44%'>Earnings&nbsp;and&nbsp;Hours</td>
+    <td width='5%'>Qty</td>
+    <td width='5%'>Rate</td>
+    <td width='25%' align='right'>Current</td>
+    <td width='25%' align='right'>YTD&nbsp;Amount</td>
+  </tr>
+  {% for row in doc.earnings %}
+  <tr>
+    <td><span class="style12">{{row.salary_component or ""}}</span></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+    <td align='right'><span class="style12">{{row.get_formatted('amount')}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('year_to_date')}}</span></td>
+  </tr>
+  {% endfor %}
+</table>
+<table width="110%" style='font-size:10px; line-height:0px; margin:0 0 0 -10px'>
+    <tr>
+    <td width='54%'>Taxes</td>
+    <td width='28%' align='right'>Current</td>
+    <td width='28%' align='right'> YTD&nbsp;Amount</td>
+  </tr>
+  {% for row in doc.deductions %}
+  <tr>
+    <td><span class="style12">{{row.salary_component or ""}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('amount')}}</span></td>
+    <td align='right'><span class="style12">{{row.get_formatted('year_to_date')}}</span></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td ><span class="style14">Net Pay</span></td>
+    <td align='right'><span class="style12">{{doc.get_formatted('net_pay') or ""}}</span></td>
+    <td align='right'><span class="style12">{{doc.get_formatted('year_to_date') or ""}}</span></td>
+  </tr>
+</table>
+	</td>
+    <td width="50%"><p style="line-height:13px">SSN </p> <p>***-**-{{last_part}}</p> 
+	<table width="100%" style='font-size:10px; line-height:0px'>
+  <tr>
+    <td width="63%">Pay Period: {{ frappe.utils.get_datetime(doc.start_date).strftime("%m/%d/%Y") }}-{{ frappe.utils.get_datetime(doc.end_date).strftime("%m/%d/%Y") }}</td>
+    <td width="38%">Pay Date:{{ frappe.utils.get_datetime(doc.posting_date).strftime("%m/%d/%Y") }}</td>
+  </tr>
+</table>
+
+	</td>
+  </tr>
+</table>
+
+
+
+<br />
+<table width="100%">
+  <tr>
+<td width="100%"><div align="left" class="style12"><span class="style4">{{ (doc.company or "") }}</span>
+  <span class="style15">{%- set company_address = frappe.db.get_value(
+    "Dynamic Link",
+    {"link_doctype": "Company", "link_name": doc.company, "parenttype": "Address"},
+    "parent"
+    ) -%}
+    
+    {%- if company_address -%}
+    {{ frappe.db.get_value("Address", company_address, "address_line1") or '' }}
+    {%- endif -%}</span></div></td  >
+  </tr>
+</table>
+
+</body>
+</html>
