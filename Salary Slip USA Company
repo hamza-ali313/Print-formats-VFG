@@ -21,7 +21,7 @@
     letter-spacing: 2px;
 }
 .style10 {
-	font-size: 12px;
+	font-size: 13px;
 	font-weight:700;
 }
 .style11 {font-size: 17px;  font-family: 'times'; 	font-weight: 900;}
@@ -33,11 +33,15 @@
 -->
 @font-face {
  font-family: 'MICR';
- src: url('https://erp.speciapro.com/files/micr-plain.ttf') format('truetype');
+ src: url('https://erp.speciapro.com/files/MICRE13B.ttf') format('truetype');
 }
 @font-face {
  font-family: 'SG';
  src: url('https://erp.speciapro.com/files/ScienceGothic.ttf') format('truetype');
+}
+@font-face {
+ font-family: 'SG_L';
+ src: url('https://erp.speciapro.com/files/ScienceGothic-Lt.ttf') format('truetype');
 }
 @font-face {
  font-family: 'times';
@@ -78,6 +82,12 @@
     font-weight:light;
     letter-spacing: -1px;
 }
+.sgl_font {
+    font-family: 'SG_L';
+    font-size: 11px;
+    font-weight:light;
+    letter-spacing: -1px;
+}
 
 </style>
 
@@ -114,22 +124,22 @@
 </table>
 <table width="100%" style="line-height:0px">
   <tr style="line-height:0px">
-    <td width="13%" class='style3 sg_font'>Pay to the</td>
+    <td width="13%" class='style3 sgl_font'>Pay to the</td>
     <td width="55%"></td>
     <td width="3%"></td>
     <td width="20%"></td>
   </tr>
   <tr style="line-height:0px">
-    <td width="13%" class='style3 sg_font'>Order of</td>
+    <td width="13%" class='style3 sgl_font'>Order of</td>
     <td width="57%" style="border-bottom:1px solid #000000"><span class="style11">{{doc.employee_name or ""}}</span></td>
     <td width="3%"><div align="center" class="style6 style16" style='font-family: "font-family: 'ARIALI 1';";'>$</div></td>
     <td width="21%" style="border-bottom:1px solid #000000"><div align="center" class="style10" style='font-size: 16px; font-family: "times"'>**{{doc.net_pay}}</div></td>
   </tr>
 </table>
-<table width="100%">
+<table width="100%" style="line-height:0px; margin:10px 0 0 0">
     <tr>
-    <td width="90%" style="border-bottom:1px solid #000000; font-family: 'times'; font-style:italic"><span class="style10">{{(doc.total_in_words or "").upper()}}****</span></td>
-    <td width="10%" class="style3 sg_font" style='vertical-align: bottom;'>Dollers</td>
+    <td width="90%" style="border-bottom:1px solid #000000; font-family: 'times'; font-style:italic" class='style10'>{{(doc.total_in_words or "").upper()}}****</td>
+    <td width="10%" class="sgl_font" style='vertical-align: bottom;'>Dollers</td>
   </tr>
 </table>
 <table width="100%" style='line_height:0px;'>
@@ -140,14 +150,16 @@
 </table>
 <table width="100%" style="line-height:1px">
   <tr>
-    <td width="8%"><span class="style3 sg_font">Memo</span></td>
+    <td width="8%"><span class="style3 sgl_font">Memo</span></td>
     <td width="48%" style="border-bottom:1px solid #000000;  font-family: 'times';"><span class="style3">Pay Period : {{ frappe.utils.get_datetime(doc.start_date).strftime("%m/%d/%Y") }}-{{ frappe.utils.get_datetime(doc.end_date).strftime("%m/%d/%Y") }}</span></td>
     <td width="14%">&nbsp;</td>
-    <td width="30%" style="border-bottom:1px solid #000000"><div align="center" class="style3">{{doc.custom__signeture_attechment or ""}}</div></td>
+    <td width="30%" style="border-bottom:1px solid #000000"><div align="center" class="style3" style='position:relative;'><img style='position:absolute;bottom:0px; width:130px' src={{ frappe.db.get_value('Company', doc.company, 'custom_signature') or "" }}/></div></td>
   </tr>
 </table>
 <div class="micr-line" style='text-align:center; margin: 20px 0 20px -140px'>
-    {{ doc.custom_micr_number or "" }}
+    &#9288;{{ frappe.db.get_value('Company', doc.company, 'custom_cheque_no') or "" }}&#9288;
+    &#9286;{{ frappe.db.get_value('Company', doc.company, 'custom_account_no') or "" }}&#9286;
+    {{ frappe.db.get_value('Company', doc.company, 'custom_cheque_serial_no') or "" }}&#9288;
 </div>
 
 <table width="100%">
