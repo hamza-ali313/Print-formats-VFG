@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Invoice</title>
+<style>
+body {
+    counter-reset: page 1;
+    font-family: Arial, sans-serif;
+}
+@media print {
+    body {
+        zoom: 0.85;   /* 80% scale */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+
+    }
+    .box_h {
+       height: 285mm;
+    }
+}
+@page {
+  size: A4; 
+  margin: 4mm;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+}
+.watermark {
+    position: fixed;
+    top: 33%;
+    left: 0;
+    width: 100%;
+    font-size: 70px;
+    font-weight: bolder;
+    color: #80808047;
+    z-index: 0;
+    text-align: center;
+    pointer-events: none;
+}
+@font-face {
+    font-family: 'sans';
+    src: url('/files/Urban%20Shadow%20Sans%20Serif.otf') format('opentype');
+}
+h4, h1 { margin: 0; }
+.break { page-break-before: always; }
+.amnt_word {
+    text-transform: uppercase;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+th strong {
+    color: #000080 !important;
+    text-align: center;
+}
+.page-break {
+    page-break-after: always;
+}
+th, td {
+    border: 1px solid #000;
+    padding: 4px;
+    vertical-align: top;
+}
+.no-border { border: none !important; }
+.center { text-align: center; }
+.right { text-align: right; }
+.bold { font-weight: bold; }
+.box {
+    border: 1px solid #000;
+    width: 150px;
+    border-radius: 8px;
+    text-align: center;
+}
+.box-sq {
+    border: 1px solid #000;
+    width: 98%;
+    text-align: left;
+    padding: 8px 10px;
+    margin: 3px 0;
+    line-height: 13px;
+    word-wrap: break-word;
+}
+.title {
+    font-size: 33px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: 'sans', Arial, sans-serif;
+    letter-spacing: 2px;
+    color: #000080;
+    text-decoration: underline;
+}
+.style9 { font-size: 12px; overflow: hidden; font-weight: bold; color: #000080; }
+.style14 { font-size: 12px; overflow: hidden; }
+.style17 { font-size: 13px; overflow: hidden; }
+.style20 {text-transform: uppercase; word-wrap: break-word; line-height: 1.4; font-size: 13px; overflow: hidden; }
+
+
+.style21 {font-size: 12px; overflow: hidden; font-weight: bold; }
+.style22 {text-align: left; font-size: 12px; overflow: hidden; font-weight: bold; }
+.style23 {text-align: right; font-size: 12px; overflow: hidden; font-weight: bold; }
+.style12 {text-align: right; font-size: 13px; font-weight: bold; }
+.style15 {font-size: 12px; font-weight: bold; }
+.style24 {color: #124}
+.style25 {color: #000099}
+</style>
+</head>
+<body>
+  {{ letter_head }}
+<div class="watermark">
+  {{ doc.custom_certification or '' }}
+</div>
+
+<div class="title">INVOICE</div>
+<!-- ORIGINAL box on top right -->
+<div style="
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-top: -40px;
+  margin-bottom: 10px;
+">
+  <div class="box" style="
+    background-color: #ededed;
+    padding: 2px 8px;
+    border-radius: 8px;
+    text-align: center;
+  ">
+    <h1 class="style24" style="margin: 0; color:#000066">ORIGINAL</h1>
+  </div></div>
+
+
+<!-- Header Section -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+
+  <!-- Left side: Table -->
+  <div style="width: 100%;">
+    <table width="100%" style="width:100%; line-height: 3px;">
+      <tr>
+        <td colspan="3" class="no-border"></td>
+      </tr>
+      <tr>
+        <td><strong style="color: #8B0000;">INVOICE DATE</strong></td>
+        <td><strong style="color: #000080;">{{ doc.get_formatted('posting_date') }}</strong></td>
+        <td><strong style="color: #8B0000;">INVOICE NO</strong></td>
+        <td><strong style="color: #000080;">{{ doc.name.split('-')[-1] }}</strong></td>
+      </tr>
+      <tr>
+        <td><strong style="color: #8B0000;">CUSTOMER NAME</strong></td>
+        <td colspan="3"><strong style="color: #000080;">{{ doc.customer_name }}</strong></td>
+      </tr>
+      <tr>
+        <td><strong style="color: #8B0000;">REGISTRATION NO</strong></td>
+        <td colspan="3"><strong style="color: #000080;">{{ frappe.db.get_value('Customer', doc.customer, 'custom_regristration_no') or '' }}</strong></td>
+      </tr>
+      <tr>
+        <td><strong style="color: #8B0000;">ORDER NO</strong></td>
+        <td colspan="3"><strong style="color: #000080;">{{ doc.custom_order_no or '' }}</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Right side: ORIGINAL box -->
+  
+
+</div>
+<br/>
+<table style="line-height: 13px; width: 100%; border-collapse: collapse;" class="items_sec">
+
+    <tr style="background-color: #ededed;">
+        <td width="30%" align='center' ><span class="style9">PRODUCT NAME</span></td>
+        <td width="14%" align='center'><span class="style9">QUALITY</span></td>
+        <td width="17%" align='center'><span class="style9">COLOR NAME</span></td>
+        <td width="11%" align='center'><span class="style9">QTY</span></td>
+        <td width="12%" align='center'><span class="style9">NET BILLING QUANTITY</span></td>
+        <td width="6%" align='center'><span class="style9">Rate<br>(LBS)</span></td>
+        <td width="11%" align='center'><span class="style9">AMOUNT</span></td>
+    </tr>
+    <tr>
+        <td colspan="7" style="padding: 0; " class='box_h'>
+            <table style="width: 100%; border: none; border-collapse: collapse; line-height: 6px;">
+                {% for item in doc.items %}
+                <tr style="border: none;">
+                    <td width="30%" class="style14" style="border: none;"><strong>      
+                    {{ (item.custom_print_item_name or item.item_name)[:36] }}
+                    </strong></td>
+                   <td width="14%" class="style21" style="border: none;">
+  {{ "%.4f" | format(frappe.db.get_value('Item', item.item_code, 'custom_gram_per_piece') or 0) }}
+  {% set weight_type = (item.custom_weight_type or '') | lower %}
+
+  {% if weight_type == "lbs per piece" %}
+    LBS/PCS
+  {% elif weight_type == "gram per piece" %}
+    GMS/PCS
+  {% elif weight_type == "gram per dozen" %}
+    GMS/DZN
+  {% elif weight_type == "once per dozen" %}
+    OZ/PCS
+  {% elif weight_type == "lbs per dozen" %}
+    LBS/DZN
+  {% elif weight_type == "lbs per meter" %}
+    LBS/MTR
+  {% elif weight_type == "gram per meter" %}
+    GMS/MTR
+  {% else %}
+    {{ item.custom_weight_type or '' }}
+  {% endif %}</td>
+
+
+                    <td width="17%" class="style21" style="border: none;">{{ item.custom_color_name[:17] | upper if item.custom_color_name else '' }}</td>
+                    <td width="11%" class="style22" style="border: none;">{{ item.qty | int }} {{ item.stock_uom or '' }}</td>
+                    <td width="12%" class="style22" style="border: none;">
+                        {% if doc.custom_billing_type == "KG" %}
+                            {{ "{:,.2f}".format(item.custom_weight_in_kg or 0) }} KG
+                        {% else %}
+                            {{ "{:,.2f}".format(item.custom_weight_in_lbs or 0) }} LBS
+                        {% endif %}                    </td>
+                    <td width="6%" class="style23" style="border: none;">{{ "{:,.2f}".format(item.custom_rate_per_lbs or 0) }}</td>
+                    <td width="11%" class="style23" style="border: none;">{{ "{:,.2f}".format(item.amount or 0) }}</td>
+                </tr>
+                {% endfor %}
+            </table>      </td>
+    </tr>
+</table>
+
+<!-- Amount Summary Section -->
+{% if doc.rounded_total %}
+<table style="position: relative; bottom: 0; width: 100%; line-height:10px">
+    <tr>
+        <td width="45%" rowspan="5" style="width:50%;">
+            <div class="box-sq">
+                <p class="style17" style="color: #008000; background-color: #f0fff0; line-height:10px;"><b>AMOUNT IN WORDS</b></p>
+            </div>
+            <div class="box-sq">
+                <p class="style20"><b>{{ frappe.utils.money_in_words(doc.rounded_total, doc.currency) }}</b></p>
+            </div>        </td>
+        <td width="28%" style="color: #008000; background-color: #f0fff0; line-height:3px;"><span class="style17"><b>TOTAL BILLING QUANTITY (LBS)</b></span></td>
+        <td width="27%" class="style12" style="color: #000080; background-color: #ffe8e8;">
+            {{ "{:,.2f}".format(doc.get('custom_total_weight_in_lbs') or 0) }} LBS        </td>
+    </tr>
+    <tr>
+        <td style="color: #008000; background-color: #f0fff0;"><span class="style17"><b>TOTAL BILLING QUANTITY (KG)</b></span></td>
+        <td class="style12" style="color: #000080; background-color: #ffe8e8;">
+            {{ "{:,.2f}".format(doc.get('custom_total_weight_in_kg') or 0) }} KG        </td>
+    </tr>
+    <tr>
+        <td style="color: #008000; background-color: #f0fff0;"><span class="style17"><b>AMOUNT EXCLUDING SALES TAX</b></span></td>
+        <td class="style12" style="color: #000080; background-color: #ededed;">
+            {{ "{:,.2f}".format(doc.net_total or 0) }}        </td>
+    </tr>
+    <tr>
+        <td style="color: #008000; background-color: #f0fff0;"><span class="style17"><b>SALES TAX AMOUNT 18%</b></span></td>
+        <td class="style12" style="color: #000080; background-color: #ededed;">
+            {{ "{:,.2f}".format(doc.total_taxes_and_charges or 0) }}        </td>
+    </tr>
+    <tr>
+        <td height="16" style="color: #008000; background-color: #f0fff0;"><span class="style17"><b>AMOUNT INCLUDING SALES TAX</b></span></td>
+        <td class="right" style="background-color: #fbfafa;">
+        <span class="style15">{{ "{:,.2f}".format(doc.grand_total or 0) }}            </span></td>
+    </tr>
+
+
+<!-- Signatures -->
+    <tr>
+        <td class="no-border center">&nbsp;</td>
+        <td class="no-border center"></td>
+        <td class="no-border center">&nbsp;</td>
+    </tr>
+	
+<!-- Signatures -->
+    <tr>
+        <td class="no-border center" >&nbsp;</td>
+		<td class="no-border center"></td>
+        <td class="no-border center" ></td>
+    </tr>
+
+<tr>
+        <td class="no-border center"><div align="left"><b>RECEIVER SIGNATURE</b></div></td>
+		<td class="no-border center"></td>
+        <td class="no-border center"><b>SIGNATURE</b></td>
+  </tr>
+</table>
+{% endif %}
+
+</body>
+</html>
