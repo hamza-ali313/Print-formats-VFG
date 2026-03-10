@@ -1,26 +1,28 @@
-{% set approval = frappe.db.get_value("Workflow Action",
-    {"reference_name": doc.name, "workflow_state": "Approved"},
-    "user") %}
-
-<table width='100%' style='position:fixed; bottom:0'>
+<table width='100%' style='position:fixed; bottom:100px'>
     <tr>
-        <td style='border-bottom:1px solid #000'>{{ frappe.get_doc("User", doc.owner).full_name }}</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'><b>{{ frappe.get_doc("User", doc.owner).full_name }}</b></td>
         <td>&nbsp</td>
-        <td style='border-bottom:1px solid #000'></td>
+        <td style='border-bottom:1px solid #000; text-align:center;'><b>{{ frappe.get_doc("User", doc.custom_checked_by).full_name if doc.custom_checked_by else "" }}</b></td>
         <td>&nbsp</td>
-        <td style='border-bottom:1px solid #000'>{{ frappe.get_doc("User", approval).full_name if approval else "" }}</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'><b>{{ frappe.get_doc("User", doc.custom_approved_by).full_name if doc.custom_approved_by else "" }}</b></td>
+        <td>&nbsp</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'></td>
     </tr>
     <tr>
        <td style='text-align:center;'>
-         <strong>Received By</strong>   
+         <strong>PREPARED BY</strong>   
         </td>
         <td>&nbsp</td>
         <td style='text-align:center;'>
-        <strong>Prepared By</strong>    
+        <strong>CHECKED BY</strong>    
         </td>
         <td>&nbsp</td>
         <td style='text-align:center;'>
-            <strong>Approved By</strong>
+            <strong>APPROVED BY</strong>
+        </td> 
+        <td>&nbsp</td>
+        <td style='text-align:center;'>
+            <strong>RECEPIENT BY</strong>
         </td> 
     </tr>
 </table>
