@@ -1,10 +1,14 @@
+{% set approval = frappe.db.get_value("Workflow Action",
+    {"reference_name": doc.name, "workflow_state": "Approved"},
+    "user") %}
+
 <table width='100%' style='position:fixed; bottom:0'>
     <tr>
         <td style='border-bottom:1px solid #000'></td>
         <td>&nbsp</td>
         <td style='border-bottom:1px solid #000'></td>
         <td>&nbsp</td>
-        <td style='border-bottom:1px solid #000'></td>
+        <td style='border-bottom:1px solid #000'>{{ frappe.get_doc("User", approval).full_name if approval else "" }}</td>
     </tr>
     <tr>
        <td style='text-align:center;'>
@@ -16,7 +20,7 @@
         </td>
         <td>&nbsp</td>
         <td style='text-align:center;'>
-            <strong>Verified By</strong>
+            <strong>Approved By</strong>
         </td> 
     </tr>
 </table>
