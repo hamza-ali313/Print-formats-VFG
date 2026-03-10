@@ -1,3 +1,20 @@
+# Prepared By
+if not doc.prepared_by:
+    doc.prepared_by = doc.owner
+
+# Checked By
+if doc.workflow_state == "Checked":
+    doc.custom_checked_by = frappe.session.user
+
+# Approved By
+if doc.workflow_state == "Approved":
+    doc.custom_approved_by = frappe.session.user
+
+#####The Above code is for server script that will update the custom created fields like custom_checked_by and custom_approved_by then 
+this html will work
+
+
+## This is Html part
 <table width='100%' style='position:fixed; bottom:100px'>
     <tr>
         <td style='border-bottom:1px solid #000; text-align:center;'><b>{{ frappe.get_doc("User", doc.owner).full_name }}</b></td>
