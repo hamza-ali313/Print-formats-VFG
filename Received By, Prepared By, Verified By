@@ -4,7 +4,7 @@
 
 <table width='100%' style='position:fixed; bottom:0'>
     <tr>
-        <td style='border-bottom:1px solid #000'></td>
+        <td style='border-bottom:1px solid #000'>{{ frappe.get_doc("User", doc.owner).full_name }}</td>
         <td>&nbsp</td>
         <td style='border-bottom:1px solid #000'></td>
         <td>&nbsp</td>
