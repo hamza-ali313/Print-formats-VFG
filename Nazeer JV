@@ -1,0 +1,431 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Payment Voucher</title>
+ <style type="text/css">
+  @page {
+    size: A4;
+    margin: 0mm;
+  }
+
+  body {
+        min-height: 148.5mm; 
+        border:1px solid #000;
+      }
+  body {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 2mm;
+    line-height: 1;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0;
+  }
+
+  td, th {
+    padding: 1px 2px;
+    vertical-align: middle;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .voucher-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .style3, .style4, .style8, .style9, .style11, .style13 {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .style9 {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #FF3300;
+    margin-top: 2px;
+  }
+
+  .signature-cell {
+    border-bottom: 1px solid #000;
+    height: 10px;
+  }
+
+  .signature-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .section-header {
+    background: #e8e8e8;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .half-page {
+    height: 14.85cm;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .content-section {
+    flex: 1;
+  }
+  .signature-section {
+	position: absolute;
+	bottom: 49px;
+	width: 100%;
+	left: 7px;
+  }
+
+  /* Item Table Updated: Added min-height for bottom space */
+  .item-table {
+    margin-top: 4px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-height: 150px; 
+     
+  }
+
+  .item-table td {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    padding: 4px;
+    line-height: 1;
+    vertical-align: top !important;
+  }
+
+  .item-table tr.section-header td {
+    border-top: 1px solid #000;
+  }
+
+  .item-table tr:last-child td {
+    border-bottom: 1px solid #000;
+  }
+
+  .item-table td:first-child { border-left: 1px solid #000; }
+  .item-table td:last-child  { border-right: 1px solid #000; }
+
+ .style15 {font-size: 12px}
+.style17 {font-size: 12px}
+ .style18 {font-size: 12px}
+ .style19 {border-bottom: 1px solid #000; height: 10px; font-size: 12px; }
+.style20 {text-align: center; font-size: 12px; font-weight: bold; line-height: 1; }
+ .style21 {line-height: 1; font-size: 12px;}
+ </style>
+
+</head>
+<body>
+  <div class="half-page">
+    <div class="content-section">
+      <header style="margin:0">
+        <span>{{ letter_head }}</span>
+      </header>
+
+      <h1 style="margin-top:0px; line-height:14px; text-align:center">
+          <b>
+        {% if doc.custom_type == "Pay" %}
+          {% if doc.voucher_type == "Cash Entry" %}
+              CASH PAYMENT VOUCHER
+          {% elif doc.voucher_type == "Bank Entry" %}
+              BANK PAYMENT VOUCHER
+          {% else %}
+              PAYMENT VOUCHER
+          {% endif %}
+        {% elif doc.custom_type == "Receive" %}
+          {% if doc.voucher_type == "Cash Entry" %}
+              CASH RECEIVING VOUCHER
+          {% elif doc.voucher_type == "Bank Entry" %}
+              BANK RECEIVING VOUCHER
+          {% else %}
+              RECEIVING VOUCHER
+          {% endif %}
+        {% else %}
+          BANK VOUCHER
+        {% endif %}
+        </b>
+      </h1>
+
+      <table border="1" bordercolor="#000000" style="margin-top:3px;">
+        <tr>
+          <td width="83%" style="border:none">
+            <table border="1" bordercolor="#000000" style="width:100%; line-height:0.1px">
+              <tr>
+                <td width="20%" style="background:#e8e8e8"><span class="style17">VOUCHER NO</span></td>
+                <td width="20%"><span class="style17">{{ doc.name or "" }}</span></td>
+                <td width="5%" style="background:#e8e8e8"><span class="style17">DATE</span></td>
+                <td width="15%"><span class="style17">{{ doc.get_formatted('posting_date') or "" }}</span></td>
+                <td width="20%" style="background:#e8e8e8"><span class="style17">DIVISION</span></td>
+                <td width="20%"><span class="style17">{{ doc.custom_division or "" }}</span></td>
+              </tr>
+              <tr>
+                <td style="background:#e8e8e8"><span class="style11"> 
+                    {% if doc.custom_type == 'Pay' %}
+                      <b>PAID TO</b>
+                    {% elif  doc.custom_type == 'Receive' %}
+                      <b>RECEIVE FROM</b>
+                    {% endif %}
+                </span></td>
+                <td colspan="5"><span class="style4 style17">{{ doc.pay_to_recd_from or "" }}</span></td>
+              </tr>
+            </table>
+          </td>
+          <td width="17%" align="center" style="background:#e8e8e8">
+            <span class="style13">AMOUNT (IN RS)</span>          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <table width="100%" border="0">
+              <tr>
+              <td rowspan="3" width="17%" style="vertical-align: top;">
+                <span class="style17">NARRATION:</span>
+              </td>
+              <td rowspan="3"
+                  width="53%"
+                  style="vertical-align: top; height: 60px;">
+                <span class="style17">
+                  <u>
+                    {{doc.user_remark or '' }}
+                  </u>
+                </span>
+              </td>
+              <td rowspan="3" width="13%"></td>
+              <td rowspan="3"
+                  width="17%"
+                  align="right"
+                  style="vertical-align: top; border:1px solid #000;">
+                <span class="style17">
+                  {{ "{:,.2f}".format(doc.total_debit) if doc.total_debit else "" }}
+                </span>
+              </td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+              <tr>
+                <td><span class="style17">AMOUNT IN WORDS:</span></td>
+                <td><span class="style17"><u>{% if doc.total_debit %}{{ frappe.utils.money_in_words(doc.total_debit) | upper }}{% else %}ZERO RUPEES ONLY{% endif %}</u></span></td>
+                <td align="right"><span class="style21">TOTAL RS</span></td>
+                <td align="right" style="border:1px solid #000000; line-height:3px"><span class="style17">{{ "{:,.2f}".format(doc.total_debit) if doc.total_debit else "" }}</span></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+<table class="item-table">
+  <tr class="section-header">
+    <td width="12%" align="center">A/C NO</td>
+    <td width="39%" align="center">TITLE OF ACCOUNTS</td>
+    <td width="10%" align="center">CHEQUE#</td>
+    <td width="10%" align="center">DATE</td>
+    <td width="14%" align="center">DEBIT</td>
+    <td width="14%" align="center">CREDIT</td>
+  </tr>
+	   {% for accounts in doc.accounts %}
+          <tr>
+            <td>{{ frappe.db.get_value('Account',accounts.account,'account_number') or ""}}</td>
+            <td>{{ frappe.db.get_value('Account',accounts.account,'account_name') or ""}}</td>
+            <td>
+                {% if accounts.user_remark %}
+                    {{ accounts.user_remark }}
+                {% else %}
+                    {{ doc.cheque_no or "" }}
+                {% endif %}
+            </td>
+            <td>{{doc.get_formatted('cheque_date') or ""}}</td>
+            <td><p>{{ frappe.utils.fmt_money(accounts.debit_in_account_currency) or ""}}</td>
+            <td><p>{{ frappe.utils.fmt_money(accounts.credit_in_account_currency) or ""}}</td>
+          </tr>
+	   {% endfor %}
+	   
+	{% if doc.accounts|length == 2 %}
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	
+
+    {% endif %}
+    {% if doc.accounts|length == 3 %}
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    	 <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+    
+    {% endif %}
+    {% if doc.accounts|length == 4 %}
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+     
+    {% endif %}
+    {% if doc.accounts|length == 5 %}
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+     
+    {% endif %}
+    {% if doc.accounts|length == 6 %}
+        <tr>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+          <td><span class="style18">&nbsp;</span></td>
+        </tr>
+     
+    {% endif %}
+ 
+   <tr style="border-top:1px solid #000">
+  <td colspan="2" align="right" style="border-right:#FFFFFF">&nbsp;</td>
+  <td colspan="2" align="center" style="border-left:#FFFFFF"><span class="style18">TOTAL Rs</span></td>
+  <td><span class="style18">{{ frappe.utils.fmt_money(doc.total_debit) or 0 }}</span></td>
+  <td><span class="style18">{{ frappe.utils.fmt_money(doc.total_debit) or 0 }}</span></td>
+</tr>
+</table>
+
+
+<!-- ⭐ Extra Bottom Space Below Item Table -->
+
+	<br>
+	<br><br>
+
+      <table style="width:100%">
+        <tr>
+          <td width="21%" class="style19"></td>
+          <td width="7%"><span class="style18"></span></td>
+          <td width="17%" class="style19"></td>
+          <td width="8%"><span class="style18"></span></td>
+          <td width="20%" class="style19"></td>
+          <td width="8%"><span class="style18"></span></td>
+          <td width="19%" class="style19"></td>
+        </tr>
+        <tr>
+          <td class="style20">PREPARED BY <br/> {{frappe.db.get_value('User',doc.owner,'full_name')}}</td>
+          <td><span class="style18"></span></td>
+          <td class="style20">CHECKED BY</td>
+          <td><span class="style18"></span></td>
+          <td class="style20">AUTHORISED SIGNATURE</td>
+          <td><span class="style18"></span></td>
+          <td class="style20">RECEIVER'S SIGNATURE</td>
+        </tr>
+      </table>
+
+</body>
+</html>
