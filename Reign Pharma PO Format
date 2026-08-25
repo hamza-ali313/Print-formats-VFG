@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+    @media print {
+        .page-break { page-break-after: always; }
+        body { font-size: 11px; }
+    }
+    
+    .po-container {
+        font-family: Arial, sans-serif;
+        color: #000;
+        font-size: 12px;
+        line-height: 1.3;
+        width: 100%;
+        border: 1px solid #000;
+        box-sizing: border-box;
+    }
+
+    /* Header Layout Grid */
+    .po-header-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .po-header-table td {
+        border-bottom: 1px solid #000;
+        border-right: 1px solid #000;
+        padding: 6px;
+        vertical-align: top;
+        width: 50%;
+    }
+    .po-header-table td:last-child {
+        border-right: none;
+    }
+
+    /* Meta Metadata Sub-tables */
+    .meta-split {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .meta-split td {
+        border: none !important;
+        padding: 3px 0 !important;
+        width: 50% !important;
+    }
+
+    /* Items Table styling */
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .items-table th {
+        border-bottom: 1px solid #000;
+        border-right: 1px solid #000;
+        font-weight: normal;
+        padding: 5px;
+        text-align: center;
+        background-color: #fcfcfc;
+    }
+    .items-table th:last-child { border-right: none; }
+    
+    .items-table td {
+        padding: 6px 5px;
+        vertical-align: top;
+        border-right: 1px solid #000;
+    }
+    .items-table td:last-child { border-right: none; }
+    
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    
+    /* Footer Elements */
+    .footer-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .footer-table td {
+        border-top: 1px solid #000;
+        padding: 6px;
+        vertical-align: top;
+    }
+    
+    .sign-section {
+        border-top: 1px solid #000;
+        text-align: right;
+        padding: 40px 15px 10px 15px;
+    }
+</style>
+</head>
+<body>
+
+<div class="po-container">
+    
+    <!-- Title Banner -->
+    <div style="text-align: center; font-weight: bold; font-size: 14px; padding: 5px 0; border-bottom: 1px solid #000;">
+        PURCHASE ORDER
+    </div>
+
+    <!-- Master Header Block -->
+    <table class="po-header-table">
+        <tr>
+            <!-- Left Header Column -->
+            <td>
+                <strong>Invoice To:</strong><br>
+                <span style="font-size: 13px; font-weight: bold;">{{ doc.company }}</span><br>
+                {{ doc.select_print_heading or "" }}
+                {% if doc.shipping_address_display %}
+                    {{ doc.shipping_address_display }}
+                {% else %}
+                    {{ doc.address_display }}
+                {% endif %}
+            </td>
+            
+            <!-- Right Header Column -->
+            <td>
+                <table class="meta-split">
+                    <tr>
+                        <td><strong>Order No.</strong><br>{{ doc.name }}</td>
+                        <td><strong>Dated</strong><br>{{ doc.get_formatted('transaction_date') }}</td>
+                    </tr>
+                </table>
+                <hr style="border: 0; border-top: 1px solid #000; margin: 5px 0;">
+                <table class="meta-split">
+                    <tr>
+                        <td><strong>Supplier's Ref.</strong><br>{{ doc.supplier_name }}</td>
+                        <td><strong>Mode/Terms of Payment</strong><br>{{ doc.payment_terms_template or "As agreed" }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <!-- Supplier Block -->
+            <td>
+                <strong>Supplier:</strong><br>
+                <strong style="font-size: 13px;">{{ doc.supplier }}</strong><br>
+                {{ doc.address_display }}
+            </td>
+            
+            <!-- Dispatch/Delivery Requirements -->
+            <td>
+                <table class="meta-split">
+                    <tr>
+                        <td><strong>Despatch through</strong><br>{{ doc.ship_method or "N/A" }}</td>
+                        <td><strong>Other Reference(s)</strong><br>FOR SO-05 & 07</td>
+                    </tr>
+                </table>
+                <hr style="border: 0; border-top: 1px solid #000; margin: 5px 0;">
+                <div><strong>Terms of Delivery</strong></div>
+                <div style="font-weight: bold;">{{ doc.delivery_date and "ON URGENT BASIS" or "Standard" }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Main Goods Description Matrix Table -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">S.No</th>
+                <th style="width: 40%; text-align: left;">Description of Goods</th>
+                <th style="width: 12%;">Due on</th>
+                <th style="width: 15%; text-align: right;">Quantity</th>
+                <th style="width: 10%; text-align: right;">Rate</th>
+                <th style="width: 5%;">per</th>
+                <th style="width: 5%; text-align: right;">Disc. %</th>
+                <th style="width: 13%; text-align: right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in doc.items %}
+            <tr>
+                <td class="text-center">{{ item.idx }}</td>
+                <td>
+                    <strong>{{ item.item_name }}</strong>
+                    {% if item.description and item.description != item.item_name %}
+                        <br><small style="color:#555;">{{ item.description }}</small>
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ doc.get_formatted('schedule_date') }}</td>
+                <td class="text-right">
+                    {# Formats primary units alongside converted weight indicators standard in bulk formulation fields #}
+                    {{ "{:,.3f}".format(item.qty) }} {{ item.uom }}
+                    {% if item.uom == "gm" %}
+                        <br><small style="color: #444;">({{ "{:,.3f}".format(item.qty / 1000) }} kg)</small>
+                    {% endif %}
+                </td>
+                <td class="text-right">{{ "{:,.3f}".format(item.rate) }}</td>
+                <td class="text-center">{{ item.uom }}</td>
+                <td class="text-right">{{ item.discount_percentage or "0.00" }}</td>
+                <td class="text-right" style="font-weight: bold;">{{ doc.get_formatted("amount", item) }}</td>
+            </tr>
+            {% endfor %}
+            
+            <!-- Structural Fill Spacers to mirror strict spacing configurations -->
+            {% for i in range(1, 4) %}
+            <tr>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+                <td style="border-bottom: none;">&nbsp;</td>
+            </tr>
+            {% endfor %}
+            
+            <!-- Total Summation Row Block -->
+            <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000; font-weight: bold;">
+                <td></td>
+                <td class="text-right">Total</td>
+                <td></td>
+                <td class="text-right">
+                    {% set total_qty = doc.items | sum(attribute='qty') %}
+                    {{ "{:,.3f}".format(total_qty) }} gm
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right" style="font-size: 13px;">{{ doc.get_formatted("total") }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Valuation Breakdown & Financial Verification Area -->
+    <table class="footer-table">
+        <tr>
+            <td style="width: 65%; border-right: 1px solid #000;">
+                <div>Amount Chargeable (in words)</div>
+                <div style="font-weight: bold; margin-top: 5px; text-transform: capitalize;">
+                    {{ doc.in_words or "" }}
+                </div>
+            </td>
+            <td style="width: 35%; text-align: right;">
+                <div style="font-style: italic; font-size: 11px; margin-bottom: 15px;">E. & O. E.</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Executing Authorization Matrix -->
+    <div class="sign-section">
+        <div style="font-size: 11px;">for <strong>{{ doc.company }}</strong></div>
+        <div style="margin-top: 45px; font-weight: bold; text-decoration: underline;">Authorised Signatory</div>
+    </div>
+
+</div>
+
+</body>
+</html>
