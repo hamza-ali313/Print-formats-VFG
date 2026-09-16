@@ -1,0 +1,496 @@
+<style>
+    .bpv * {
+        box-sizing: border-box;
+    }
+
+    /* ---------- Wrapper: caps height to ~half an A4 page ---------- */
+    .bpv {
+        font-family: "Times New Roman", "Noto Serif", Georgia, serif;
+        color: #000;
+        font-size: 11px;
+        line-height: 1.25;
+        width: 100%;
+        max-height: 148mm;      /* half of 297mm A4 height */
+        padding: 4px 14px 6px 14px;
+        page-break-inside: avoid;
+    }
+
+    /* ---------- Company header ---------- */
+    .bpv .company-header {
+        text-align: center;
+        margin-bottom: 4px;
+    }
+
+    .bpv .company-header .company-name {
+        font-size: 15px;
+        font-weight: bold;
+        text-decoration: underline;
+        letter-spacing: 0.3px;
+    }
+
+    .bpv .voucher-title {
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        margin: 2px 0 8px 0;
+    }
+
+    /* ---------- Voucher No / Date box, top right ---------- */
+    .bpv .header-row {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 8px;
+    }
+
+    .bpv table.meta-table {
+        border-collapse: collapse;
+        width: 220px;
+        line-height:1px;
+    }
+
+    .bpv table.meta-table td {
+        border: 1px solid #000;
+        padding: 2px 6px;
+        font-size: 10.5px;
+    }
+
+    .bpv table.meta-table td.label {
+        font-weight: bold;
+        width: 45%;
+    }
+
+    /* ---------- Party / Payment info strip (new) ---------- */
+    .bpv table.party-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+
+    .bpv table.party-table td {
+        border: 1px solid #000;
+        padding: 3px 6px;
+        font-size: 10.5px;
+    }
+
+    .bpv table.party-table td.label {
+        font-weight: bold;
+        white-space: nowrap;
+        width: 14%;
+        background: #f2f2f2;
+    }
+
+    /* ---------- Main accounts table ---------- */
+    .bpv table.entry-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+    }
+
+    .bpv table.entry-table th,
+    .bpv table.entry-table td {
+        border: 1px solid #000;
+        padding: 4px 5px;
+        font-size: 10.5px;
+        text-align: center;
+        height: 20px;
+    }
+
+    .bpv table.entry-table thead th {
+        background: #d9d9d9;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .bpv table.entry-table td.particulars {
+        text-align: left;
+        padding-left: 8px;
+    }
+
+    .bpv table.entry-table td.amount {
+        text-align: right;
+        padding-right: 8px;
+    }
+
+    /* ---------- TOTAL row ---------- */
+    .bpv table.total-table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+        float:right;
+    }
+
+    .bpv table.total-table td {
+        border: 1px solid #000;
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+
+    .bpv table.total-table td.total-label {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+        width: 66%;
+    }
+
+    .bpv table.total-table td.total-amount {
+        text-align: right;
+        padding-right: 8px;
+        width: 17%;
+        font-weight: bold;
+    }
+
+    /* ---------- Amount in Words / Narration ---------- */
+    .bpv table.info-table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-bottom: 16px;
+        line-height:1px;
+        clear: both;
+    }
+
+    .bpv table.info-table td {
+        border: 1px solid #000;
+        padding: 3px 6px;
+        font-size: 10.5px;
+    }
+
+    .bpv table.info-table td.label {
+        font-weight: bold;
+        width: 16%;
+    }
+
+    /* ---------- Invoice References table (new) ---------- */
+    .bpv table.ref-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        clear: both;
+    }
+
+    .bpv table.ref-table th,
+    .bpv table.ref-table td {
+        border: 1px solid #000;
+        padding: 3px 5px;
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .bpv table.ref-table thead th {
+        background: #d9d9d9;
+        font-weight: bold;
+        color:#000;
+    }
+
+    .bpv table.ref-table tfoot td {
+        font-weight: bold;
+    }
+
+    .bpv table.ref-table td.amt {
+        text-align: right;
+        padding-right: 8px;
+    }
+
+    /* ---------- Deductions / Loss table (new) ---------- */
+    .bpv table.deduction-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+    }
+
+    .bpv table.deduction-table th,
+    .bpv table.deduction-table td {
+        border: 1px solid #000;
+        padding: 3px 5px;
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .bpv table.deduction-table thead th {
+        background: #d9d9d9;
+        font-weight: bold;
+        color:#000;
+    }
+
+    .bpv table.deduction-table td.amt {
+        text-align: right;
+        padding-right: 8px;
+    }
+
+    .bpv .section-label {
+        font-weight: bold;
+        font-size: 10.5px;
+        margin: 4px 0 3px 0;
+    }
+
+   /* Footer */
+    .footer-image {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        z-index: 9999;
+    }
+
+    .footer-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<!-- =========================================================
+     COMPANY HEADER
+========================================================= -->
+
+<img
+    src="http://am.vfg.com.pk/files/hhhhhhh.png"
+    width="100%"
+    height="40%"
+    style="object-fit:contain;"
+/>
+<div class="bpv">
+
+    <!-- ===== Voucher No / Date ===== -->
+    <div class="header-row">
+        <table class="meta-table">
+            <tr>
+                <td>Voucher No</td>
+                <td>{{ doc.name or "" }}</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>{{ doc.get_formatted('posting_date') or "" }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ===== Party / Payment info strip ===== -->
+    <table class="party-table" style="line-height: 2px;">
+        <tr>
+            <td>{{ doc.party_type or "Party" }}</td>
+            <td>{{ doc.party or "" }}{{ (" - " ~ doc.party_name) if doc.party_name else "" }}</td>
+            <td>Payment #</td>
+            <td>{{ doc.reference_no or doc.name or "" }}</td>
+        </tr>
+        <tr>
+            <td>Payment Date</td>
+            <td>{{ doc.get_formatted('reference_date') or doc.get_formatted('posting_date') or "" }}</td>
+            <td>Net Amount</td>
+            <td>{{ doc.get_formatted('paid_amount') or doc.get_formatted('received_amount') or "" }}</td>
+        </tr>
+        <tr>
+            <td>Paid From</td>
+            <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_name') or doc.paid_from or "" }}</td>
+            <td>Paid To</td>
+            <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_name') or doc.paid_to or "" }}</td>
+        </tr>
+    </table>
+
+    <!-- ===== Accounts table ===== -->
+    <table class="entry-table">
+        <thead>
+            <tr>
+                <th style="width:6%;">Sr.</th>
+                <th style="width:9%;">Account #</th>
+                <th style="width:34%;">Account Title</th>
+                <th style="width:20%;">Particulars</th>
+                <th style="width:15%;">Debit (PKR)</th>
+                <th style="width:15%;">Credit (PKR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if doc.payment_type == 'Pay' %}
+            <tr>
+                <td>1</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_name') or "" }}{{ (" - " ~ doc.party_name) if doc.party_name else "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+                <td class="amount"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_name') or "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount"></td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+            </tr>
+            {% elif doc.payment_type == 'Receive' %}
+            <tr>
+                <td>1</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_name') or "" }}{{ (" - " ~ doc.party_name) if doc.party_name else "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount"></td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_name') or "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+                <td class="amount"></td>
+            </tr>
+            {% elif doc.payment_type == 'Internal Transfer' %}
+            <tr>
+                <td>1</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_to, 'account_name') or "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+                <td class="amount"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_number') or "" }}</td>
+                <td>{{ frappe.db.get_value('Account', doc.paid_from, 'account_name') or "" }}</td>
+                <td class="particulars">{{ doc.remarks or "" }}</td>
+                <td class="amount"></td>
+                <td class="amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- ===== TOTAL ===== -->
+    <table class="total-table" style='line-height:1px;'>
+        <tr>
+            <td class="total-label">TOTAL</td>
+            <td class="total-amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+            <td class="total-amount">{{ doc.get_formatted('paid_amount') or "" }}</td>
+        </tr>
+    </table>
+
+    <!-- ===== Amount in Words / Narration ===== -->
+    <table class="info-table">
+        <tr>
+            <td>Amount in Words</td>
+            <td>{{ frappe.utils.money_in_words(doc.paid_amount, doc.paid_from_account_currency) }}</td>
+        </tr>
+        <tr>
+            <td>Narration</td>
+            <td>{{ doc.remarks or "" }}</td>
+        </tr>
+    </table>
+
+    <!-- ===== Invoice References: which invoice(s) this payment settles ===== -->
+    {% if doc.references %}
+    <div class="section-label">Invoice References</div>
+    <table class="ref-table">
+        <thead>
+            <tr>
+                <th style="width:6%;">Ser.#</th>
+                <th style="width:14%;">Invoice #</th>
+                <th style="width:12%;">Invoice Date</th>
+                <th style="width:16%;">Amount</th>
+                <th style="width:16%;">Allocated Amount</th>
+                <th style="width:18%;">Outstanding (Before)</th>
+                <th style="width:18%;">Balance (After)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set ns = namespace(total_amount=0, total_alloc=0, total_outstanding=0) %}
+            {% for row in doc.references %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row.reference_name or "" }}</td>
+                <td>{{ frappe.utils.formatdate(row.due_date, "dd-MM-yyyy") if row.due_date else "" }}</td>
+                <td class="amt">{{ "{:,.2f}".format(row.total_amount or 0) }}</td>
+                <td class="amt">{{ "{:,.2f}".format(row.allocated_amount or 0) }}</td>
+                <td class="amt">{{ "{:,.2f}".format(row.outstanding_amount or 0) }}</td>
+                <td class="amt">{{ "{:,.2f}".format((row.outstanding_amount or 0) - (row.allocated_amount or 0)) }}</td>
+            </tr>
+            {% set ns.total_amount = ns.total_amount + (row.total_amount or 0) %}
+            {% set ns.total_alloc = ns.total_alloc + (row.allocated_amount or 0) %}
+            {% set ns.total_outstanding = ns.total_outstanding + (row.outstanding_amount or 0) %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total</td>
+                <td class="amt">{{ "{:,.2f}".format(ns.total_amount) }}</td>
+                <td class="amt">{{ "{:,.2f}".format(ns.total_alloc) }}</td>
+                <td class="amt">{{ "{:,.2f}".format(ns.total_outstanding) }}</td>
+                <td class="amt">{{ "{:,.2f}".format(ns.total_outstanding - ns.total_alloc) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    {% endif %}
+
+    <!-- ===== Deductions / Loss (tax withholding, rounding loss, other charges) ===== -->
+    {% if doc.deductions %}
+    <div class="section-label">Deductions / Loss</div>
+    <table class="deduction-table">
+        <thead>
+            <tr>
+                <th style="width:8%;">Sr.#</th>
+                <th style="width:22%;">Account</th>
+                <th style="width:22%;">Cost Center</th>
+                <th style="width:28%;">Description</th>
+                <th style="width:20%;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set ns2 = namespace(total_deduction=0) %}
+            {% for row in doc.deductions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ frappe.db.get_value('Account', row.account, 'account_name') or row.account or "" }}</td>
+                <td>{{ row.cost_center or "" }}</td>
+                <td>{{ row.description or "" }}</td>
+                <td class="amt">{{ "{:,.2f}".format(row.amount or 0) }}</td>
+            </tr>
+            {% set ns2.total_deduction = ns2.total_deduction + (row.amount or 0) %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">Total Deduction / Loss</td>
+                <td class="amt">{{ "{:,.2f}".format(ns2.total_deduction) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    {% endif %}
+
+   <table width='100%'>
+    <tr>
+        <td style='border-bottom:1px solid #000; text-align:center;'><b>{{ frappe.get_doc("User", doc.owner).full_name }}</b></td>
+        <td>&nbsp</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'>&nbsp;</td>
+        <td>&nbsp</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'>&nbsp;</td>
+        <td>&nbsp</td>
+        <td style='border-bottom:1px solid #000; text-align:center;'>&nbsp;</td>
+    </tr>
+    <tr>
+       <td style='text-align:center;'>
+         <strong>PREPARED BY</strong>   
+        </td>
+        <td>&nbsp</td>
+        <td style='text-align:center;'>
+        <strong>CHECKED BY</strong>    
+        </td>
+        <td>&nbsp</td>
+        <td style='text-align:center;'>
+            <strong>APPROVED BY</strong>
+        </td> 
+        <td>&nbsp</td>
+        <td style='text-align:center;'>
+            <strong>RECEPIENT BY</strong>
+        </td> 
+    </tr>
+</table>
+
+</div>
+
+<!-- ===== Fixed footer image (letterhead strip) — repeats on every page ===== -->
+<div class="footer-image">
+    <img src="http://am.vfg.com.pk/files/masoosd%201.png">
+</div>
